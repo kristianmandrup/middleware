@@ -2,6 +2,14 @@
   "name":    "middleware",
   "version": "0.0.1",
   "main": "./index.js",
+  "author": "Kristian Mandrup <kmandrup@gmail.com>",
+  "description": "a simple middleware infrastructure",
+  "contributors": [
+     {
+        "name": "Kristian Mandrup",
+        "email": "kmandrup@gmail.com"
+     }
+  ],
   "repository": {
     "type": "git",
     "url":  "https://github.com/kristianmandrup/middleware.git"
@@ -23,5 +31,9 @@
     "mocha":            "*",
     "should":           "*",
     "chai":             "*"
-   }
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.10"
+  }
 }
