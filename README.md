@@ -1,22 +1,14 @@
 # Middleware and Runners
 
-The middleware components to enable flexile validation on client or server js environments.
+Other middleware projects *-mw should leverage this basic middleware functionality
 
 ## TODO
 
-Other -mw projects) should reference this basic middleware functionality
-
-The middleware index and config files should be removed... ??
-
-The model-runner should be moved to model-mw project
-
-Convert all files to LiveScript !!
+The model_runner and model_config should be moved to *model-mw* project
 
 ## Middleware
 
 The middlewares are currently split into Runner and -Mw components.
 
-The idea is that a mw-runner can be defined (using base-runner as the "base") and will run a list of middlewares (-mw)
+The idea is that a *-runner can be defined (using base-runner as the "base") and will run a list of middlewares (*-mw)
 in succession.
-
-
