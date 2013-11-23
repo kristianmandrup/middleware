@@ -5,5 +5,5 @@ module.exports =
   runner:
     base:   require './runner/base_runner'
     model:  require './runner/model_runner'
-  config:
-    model:  require './config/model_config'
+  # config:
+    # model:  require './config/model_config'
