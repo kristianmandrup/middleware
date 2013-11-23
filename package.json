@@ -1,13 +1,13 @@
 {
-  "name":    "middleware",
-  "version": "0.0.2",
-  "main": "./index.js",
-  "author": "Kristian Mandrup <kmandrup@gmail.com>",
+  "name":     "middleware",
+  "version":  "0.0.2",
+  "main":     "./index.js",
+  "author":   "Kristian Mandrup <kmandrup@gmail.com>",
   "description": "a simple middleware infrastructure",
   "contributors": [
      {
-        "name": "Kristian Mandrup",
-        "email": "kmandrup@gmail.com"
+        "name":   "Kristian Mandrup",
+        "email":  "kmandrup@gmail.com"
      }
   ],
   "repository": {
@@ -19,7 +19,7 @@
     "basic"
   ],
   "scripts": {
-    "start": "node test/middleware/base_runner.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "lodash":           "*",
