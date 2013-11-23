@@ -25,7 +25,8 @@
     "lodash":           "*",
     "LiveScript":       "*",
     "inflection":       "*",
-    "rubyjs":           "*"
+    "rubyjs":           "*",
+    "prelude-ls":       "*"
   },
   "devDependencies": {
     "mocha":            "*",

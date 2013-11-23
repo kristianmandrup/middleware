@@ -1,27 +1,24 @@
 BaseRunner = require './base_runner'
 inflection = require 'inflection'
-$ = require 'jquery'
+_ = require 'lodash'
 
-module.exports = ->
-  base = BaseRunner()
-
-  $.extend {}, base,
-    name: 'model'
-    runner: (args) ->
+module.exports = class ModelRunner extends BaseRunner
+    (args) ->
       # index of current middle-ware running
-
-      # TODO: Use Coffee Class and proto inheritance
-      @baserun(args)
+      super ...
 
       argsObj = arguments[0]
 
-      @model = argsObj['model']
-      @data = argsObj['data']
+      throw Error "Missing data in arguments" unless argsObj['data']
 
-      throw "Missing model in arguments" unless @model
+      @data = argsObj['data'] || {}
+      @model = argsObj['model'] || @data.constructor.displayName
+
+      throw Error "Missing model for: #{data}" unless @model
 
       # @collection = R(@model).pluralize
       @collection = inflection.pluralize @model
 
       console.log "Collection", @collection
-      @
+
+    name: 'model'
