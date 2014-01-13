@@ -1,11 +1,43 @@
-require! '../../test_setup'
-BaseMw = require '../../../mw/base_mw'
+_         = require 'prelude-ls'
+rek       = require 'rekuire'
+requires  = rek 'requires'
 
-describe 'base middleware' ->
-  var mw
+requires.test 'test_setup'
 
-  before ->
-    mw := new BaseMw 'hello'
+BaseMw       = requires.file 'mw/base_mw'
+BaseRunner   = requires.file 'runner/base_runner'
 
-  specify 'should be a BaseMw' ->
-    mw.constructor.should.be.eql BaseMw
+describe 'BaseMw' ->
+  var ctx
+
+  # function to be assigned runner, to be called when runner is done
+  doneFun = ->
+    'done :)'
+
+  runners   = {}
+  mw        = {}
+
+  describe 'create' ->
+    context 'runner' ->
+      before ->
+        runners.base  := new BaseRunner
+        ctx           :=
+          runner: runners.base
+
+        mw.base       := new BaseMw ctx
+
+      describe 'instance' ->
+        specify 'is a BaseMw' ->
+          mw.base.constructor.should.be.eql BaseMw
+
+      describe 'context' ->
+        specify 'should be set' ->
+          mw.base.context.should.be.eql ctx
+
+      describe 'name' ->
+        specify 'should be set' ->
+          mw.base.name.should.be.eql BaseMw.name
+
+      describe 'runner' ->
+        specify 'should be set' ->
+          mw.base.runner.should.be.eql runners.base
