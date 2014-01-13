@@ -1,6 +1,6 @@
-# Validator = require 'validator'
 BaseMw = require './base_mw'
 
+# TODO: why not merge this class with BaseMW or move to ModelMw ???
 module.exports = class SimpleMw extends BaseMw
   (context) ->
     console.log "context:", context
@@ -18,11 +18,5 @@ module.exports = class SimpleMw extends BaseMw
     @collection = @runner.collection
     @model = @runner.model
     @data = @runner.data
-
-#    validator = Validator.getFor(@model)
-#
-#    # default: can be customized to be context sensitive
-#    validator.validate @data, (err, result) ->
-#      console.log "validation:", err, result
 
   name: 'simple'
