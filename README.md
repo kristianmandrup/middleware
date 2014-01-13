@@ -36,5 +36,4 @@ See tests for usage examples.
 
 ## TODO
 
-The `model_runner`, `model_config` and `simple-mw` should all be moved to the *model-mw* project.
-They are here for now as examples of use...
+It should be possible to configure a set of middleware to be run either async or serially.
