@@ -1,12 +1,13 @@
 rek         = require 'rekuire'
 requires    = rek 'requires'
 
-_           = 'prelude-ls'
+_           = require 'prelude-ls'
+lo          =   require 'lodash'
 
-MiddlewareRegistry  = requires.file 'middelware_registry'
-BaseRunner          = requires.file 'base_runner'
+Debugger            = requires.file 'debugger'
+BaseRunner          = requires.file 'runner/base_runner'
 
-class Middleware
+module.exports = class Middleware implements Debugger
   (@context) ->
     unless _.is-type 'Object', context
       throw Error "Context must be an Object, was: #{typeof context}, #{context}"

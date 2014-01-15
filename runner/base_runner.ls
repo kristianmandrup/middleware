@@ -2,7 +2,9 @@ _         = require 'prelude-ls'
 rek       = require 'rekuire'
 requires  = rek 'requires'
 
-Debugger = requires.file 'debugger'
+Debugger            = requires.file 'debugger'
+
+MiddlewareRegistry  = requires.file 'mw/registry'
 
 module.exports = class BaseRunner implements Debugger
   (@done-fun) ->

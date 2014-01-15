@@ -1,7 +1,13 @@
-_ = require 'prelude-ls'
+rek       = require 'rekuire'
+requires  = rek 'requires'
+
+_         = require 'prelude-ls'
+lo        = require 'lodash'
+
+Debugger = requires.file 'debugger'
 
 # stores a set of middlewares for a given runner
-class MiddlewareRegistry
+module.exports = class MiddlewareRegistry implements Debugger
   @middlewares = {}
 
   @middleware-list = ->
@@ -16,3 +22,5 @@ class MiddlewareRegistry
   @register = (middleware) ->
     if _.is-type('Object', middleware) and middleware.run
       @@middlewares.push middleware
+
+lo.extend MiddlewareRegistry, Debugger

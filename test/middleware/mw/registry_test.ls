@@ -4,8 +4,9 @@ requires  = rek 'requires'
 
 requires.test 'test_setup'
 
-BaseMw       = requires.file 'mw/base_mw'
-BaseRunner   = requires.file 'runner/base_runner'
+BaseMw              = requires.file 'mw/base_mw'
+BaseRunner          = requires.file 'runner/base_runner'
+MiddlewareRegistry  = requires.file 'middleware_registry'
 
 describe 'MiddlewareRegistry' ->
   var ctx

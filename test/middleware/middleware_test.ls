@@ -6,6 +6,7 @@ requires.test 'test_setup'
 
 BaseMw       = requires.file 'mw/base_mw'
 BaseRunner   = requires.file 'runner/base_runner'
+Middleware   = requires.file 'middleware'
 
 describe 'Middleware' ->
   var ctx
@@ -17,5 +18,5 @@ describe 'Middleware' ->
   describe 'class methods' ->
     describe 'default-runner' ->
       specify 'is a BaseRunner' ->
-        Middleware.default-runner.constructor.should.be.eql BaseRunner
+        Middleware.default-runner!.constructor.should.be.eql BaseRunner
 
