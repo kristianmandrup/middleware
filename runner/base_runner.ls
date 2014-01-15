@@ -13,7 +13,20 @@ module.exports = class BaseRunner implements Debugger
     unless _.is-type 'Function', @done-fun
       @done-fun = @@done-fun
 
+    @registry = new MiddlewareRegistry
+
   name: 'basic'
 
   @done-fun = ->
     true
+
+  middlewares: []
+
+  next: ->
+    nextIndex = @index++
+
+    if @middlewares.length >= nextIndex
+      nextMiddleware = @middlewares nextIndex
+      nextMiddleware.run @
+    else
+      doneFun!

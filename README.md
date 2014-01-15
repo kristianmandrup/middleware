@@ -34,6 +34,8 @@ components in succession.
 
 See tests for usage examples.
 
+## Registry
+
 ## TODO
 
 It should be possible to configure a set of middleware to be run either async or serially.

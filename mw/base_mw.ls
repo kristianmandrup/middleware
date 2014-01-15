@@ -6,13 +6,13 @@ Debugger = requires.file 'debugger'
 
 # TODO: why not merge this class with BaseMW or move to ModelMw ???
 module.exports = class BaseMw implements Debugger
-  (@context, @name) ->
+  (@context) ->
     unless @context.runner?
       throw Error "Context must have a runner"
 
     @runner = @context.runner
 
-    unless _.is-type 'String', @name
-      @name = @@name
+    if _.is-type 'String', @context.name
+      @name = name
 
-  name = 'Middleware - no name'
+    @name ||= @constructor.display-name
