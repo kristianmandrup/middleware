@@ -8,19 +8,22 @@ Debugger = requires.file 'debugger'
 
 # stores a set of middlewares for a given runner
 module.exports = class MiddlewareRegistry implements Debugger
-  @middlewares = {}
+  ->
+    @middlewares = {}
 
-  @middleware-list = ->
-    @@middlewares.values!
+  middleware-list: ->
+    _.values @middlewares
 
-  @get = (name) ->
-    @@middlewares[name]
+  get: (name) ->
+    @middlewares[name]
 
-  @at = (index) ->
-    @@middleware-list[name]
+  at: (index) ->
+    @middleware-list[name]
 
-  @register = (middleware) ->
-    if _.is-type('Object', middleware) and middleware.run
-      @@middlewares.push middleware
+  register: (middleware) ->
+    unless _.is-type('Object', middleware) and middleware.run?
+      throw Error "Middleware component must be an Object with a run method, was: #{middleware}"
+
+    @middlewares[middleware.name] = middleware
 
 lo.extend MiddlewareRegistry, Debugger

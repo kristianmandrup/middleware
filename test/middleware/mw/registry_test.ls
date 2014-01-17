@@ -6,7 +6,7 @@ requires.test 'test_setup'
 
 BaseMw              = requires.file 'mw/base_mw'
 BaseRunner          = requires.file 'runner/base_runner'
-MiddlewareRegistry  = requires.file 'middleware_registry'
+MiddlewareRegistry  = requires.file 'mw/registry'
 
 describe 'MiddlewareRegistry' ->
   var ctx
@@ -35,7 +35,7 @@ describe 'MiddlewareRegistry' ->
 
     describe 'middleware-list' ->
       specify 'is empty' ->
-        registries.empty.middleware-list.should.be.eql []
+        registries.empty.middleware-list!.should.be.eql []
 
   context 'registered BaseMw' ->
     before ->
@@ -54,10 +54,10 @@ describe 'MiddlewareRegistry' ->
 
     describe 'middleware-list' ->
       specify 'has one element' ->
-        registries.empty.middleware-list.length.should.be.eql 1
+        registries.empty.middleware-list!.length.should.be.eql 1
 
       specify 'has element BaseMw instance' ->
-        registries.empty.middleware-list[0].should.be.eql mw.base
+        registries.empty.middleware-list![0].should.be.eql mw.base
 
     describe 'register' ->
       before ->
