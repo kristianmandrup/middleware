@@ -1,41 +1,44 @@
-# Middleware and Runners
+# Middleware
 
-This project contains basic Middleware and Runner classes.
+The `Middleware` class is a factory for creating a Middleware suite that contains a Runner and individual Mw components.
 
-The *BaseRunner* should be the base class for implementing most middleware runners (or simply called "runners").
-Any runner can be configured to run one or more middlewares (*-Mw)
+Here we create a `Middleware` with a `ModelRunner` and register the `Mw` components
+ `authorizer` and `validator` to be run by the ModelRunner.
 
-See authorize-mw for example. Should employ the `use` chain syntax,
-known from Express middleware to assign middleware components to be used.
-
-## Usage
-
-Other middleware projects *-mw should leverage this basic middleware functionality.
-the `index.ls` file exports the relevant API to external modules:
-
-Here is an example of how to use the middleware from an external module:
-
-```livescript
-middleware = require 'middleware'
-BaseRunner = middleware.BaseRunner
-BaseMw     = middleware.BaseMw
-
-class MySuperMwRunner extends BaseRunner
-  (args) ->
-    # ...
+```LiveScript
+model-middleware = new Middleware('model').use(authorizer).use(validator)
 ```
 
-## Middleware
+## BaseRunner
 
-The middlewares are currently split into Runner and -Mw components.
+The `BaseRunner` is a base class that provides the base functionality for any middleware runner.
+A typical runner such as `ModelRunner` (see *model-mw* project) extends `BaseRunner` to be specialized for operating with models.
 
-The idea is that a `*-runner` can be defined (using base-runner as the "base") and will run a list of middlewares `*-mw`
-components in succession.
+## BaseMw
 
-See tests for usage examples.
+The `BaseMw` is a base class for any Mw-component (middleware component) . Each Mw-component is
+assigned a runner which is responsible for running the components and maintains the global middleware
+state (including the result of running each Mw-component)
 
 ## Registry
 
-## TODO
+A Registry is used to register (store) a set of Middleware components for a given Runner.
 
-It should be possible to configure a set of middleware to be run either async or serially.
+Create registry with empty `middlewares` object
+
+```LiveScript
+registry = new Registry
+registry.register authorizer
+```
+
+It is used internally by Middleware when `use` is called:
+
+Registers authorizer
+
+```LiveScript
+# creates a new Middleware instance with an empty registry for Mw components
+middleware = new Middleware 'model'
+
+# registers the authorizer (AuthorizationMw instance) in the empty registry
+middleware.use authorizer)
+```
