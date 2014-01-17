@@ -6,6 +6,7 @@ Debugger            = requires.file 'debugger'
 
 MiddlewareRegistry  = requires.file 'mw/registry'
 
+# TODO: Should save result of each component in result list, including errors
 module.exports = class BaseRunner implements Debugger
   (@done-fun) ->
     # index of current middle-ware running

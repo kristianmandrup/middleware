@@ -8,6 +8,9 @@ BaseMw              = requires.file 'mw/base_mw'
 BaseRunner          = requires.file 'runner/base_runner'
 MiddlewareRegistry  = requires.file 'mw/registry'
 
+assert = require('chai').assert
+expect = require('chai').expect
+
 describe 'MiddlewareRegistry' ->
   var ctx
 
@@ -20,6 +23,9 @@ describe 'MiddlewareRegistry' ->
 
   registry = ->
     new MiddlewareRegistry
+
+  base-mw = (ctx) ->
+    new BaseMw ctx
 
   context 'empty registry' ->
     before ->
@@ -37,31 +43,36 @@ describe 'MiddlewareRegistry' ->
       specify 'is empty' ->
         registries.empty.middleware-list!.should.be.eql []
 
-  context 'registered BaseMw' ->
-    before ->
-      ctx := data: {}
+    describe 'get' ->
+      specify 'returns void' ->
+        expect(registries.empty.get 'BaseMw').to.equal void
 
-      registries.base := registry!
-      mw.base         := new BaseMw ctx
-
-    describe 'instance' ->
-      specify 'is a MiddlewareRegistry' ->
-        registries.base.constructor.should.be.eql MiddlewareRegistry
-
-    describe 'middlewares' ->
-      specify 'BaseMw: is BaseMw instance' ->
-        registries.empty.middlewares['BaseMw'].should.be.eql mw.base
-
-    describe 'middleware-list' ->
-      specify 'has one element' ->
-        registries.empty.middleware-list!.length.should.be.eql 1
-
-      specify 'has element BaseMw instance' ->
-        registries.empty.middleware-list![0].should.be.eql mw.base
+    describe 'at' ->
+      specify 'returns void' ->
+        expect(registries.empty.at 0).to.equal void
 
     describe 'register' ->
-      before ->
-        registries.base.register mw.base
+      context 'registered BaseMw component (no name)' ->
+        before ->
+          ctx := data: {}
+          mw.base         := base-mw ctx
+          registries.base := registry!
 
-      specify 'registers another base' ->
-        registries.base.middleware-list.length.should.eql 2
+          registries.base.register mw.base
+          # registries.base.debug-on!
+
+        describe 'middlewares' ->
+          specify 'BaseMw is registered by classname: BaseMw' ->
+            registries.base.middlewares['BaseMw'].should.be.eql mw.base
+
+        describe 'middleware-list' ->
+          specify 'has one item' ->
+            registries.base.middleware-list!.length.should.eql 1
+
+      describe 'get' ->
+        specify 'returns BaseMw mw component' ->
+          registries.base.get('BaseMw').should.eql mw.base
+
+      describe 'at' ->
+        specify 'returns BaseMw mw component' ->
+          registries.base.at(0).should.eql mw.base

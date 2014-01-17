@@ -1,5 +1,4 @@
 require! 'mocha'
-require! chai.assert
 
 # https://github.com/visionmedia/should.js
 require! 'should'

@@ -13,7 +13,7 @@ describe 'Middleware' ->
   var middleware
 
   # function to be assigned runner, to be called when runner is done
-  doneFun = ->
+  done-fun = ->
     'done :)'
 
   runners = {}
@@ -28,24 +28,41 @@ describe 'Middleware' ->
     var runner-ctx
 
     describe 'create' ->
-      before ->
-        mw.simple     := new BaseMw
-        runners.basic := new BaseRunner runner-ctx
-        ctx           :=
-          context: runners.basic
-        middleware    := new Middleware ctx
+      context 'no mw components registered' ->
+        before ->
+          mw.simple     := new BaseMw
+          runners.basic := new BaseRunner runner-ctx
+          ctx           :=
+            context: runners.basic
+          middleware    := new Middleware ctx
 
-      describe 'runner' ->
-        specify 'sets runner' ->
-          middleware.runner.should.eql runners.basic
+        describe 'runner' ->
+          specify 'sets runner' ->
+            middleware.runner.should.eql runners.basic
 
-      describe 'index' ->
-        specify 'inits to 0' ->
-          middleware.index.should.eql 0
+        describe 'index' ->
+          specify 'inits to 0' ->
+            middleware.index.should.eql 0
+
+        describe 'run' ->
+          specify 'returns result of default done-fun' ->
+              middleware.run!.should.eql BaseRunner.done-fun!
+
 
     describe 'use' ->
-      before ->
-        middleware.use mw.simple
+      context 'using simple mw' ->
+        before ->
+          middleware.use mw.simple
+          runners.basic.done-fun = done-fun
 
-      specify 'registers component in registry' ->
-        middleware.registry.should.eql 0
+        describe 'registered component' ->
+          specify 'in registry middleware list' ->
+            middleware.registry.middleware-list![0].should.eql mw.simple
+
+          specify 'in middlewares by name' ->
+            middleware.registry.middlewares[mw.simple.name].should.eql mw.simple
+
+        describe 'run' ->
+          context '' ->
+            before ->
+              middleware.run!.should.eql done-fun!

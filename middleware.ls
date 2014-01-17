@@ -38,8 +38,8 @@ module.exports = class Middleware implements Debugger
     @index++
 
   run: ->
-    if run-next-mw then run-next! else @done-fun!
-    inc-index!
+    if @run-next-mw then @run-next! else @done-fun!
+    @inc-index!
 
   run-next: ->
-    @registry.at(next-index).run @runner
+    @registry.at(@next-index).run @runner
