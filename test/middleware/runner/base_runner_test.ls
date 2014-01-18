@@ -26,10 +26,10 @@ describe 'base runner' ->
     specify 'should be a BaseRunner' ->
       runners.base.constructor.should.be.eql BaseRunner
 
-    specify 'should have assigned default done-fun function' ->
-      runners.base.done-fun!.success.should.be.true
-      runners.base.done-fun!.errors.should.eql {}
-      runners.base.done-fun!.results.should.eql {}
+    specify 'should have assigned default on-success function' ->
+      runners.base.on-success!.success.should.be.true
+      runners.base.on-success!.errors.should.eql {}
+      runners.base.on-success!.results.should.eql {}
 
     describe 'results' ->
       specify 'should be empty' ->
@@ -45,14 +45,14 @@ describe 'base runner' ->
 
   context 'custom done function' ->
     before ->
-      runners.base := base-runner done-fun: done-fun
+      runners.base := base-runner on-success: done-fun
 
     specify 'should have assigned done-fun function' ->
-      runners.base.done-fun!.should.eql done-fun!
+      runners.base.on-success!.should.eql done-fun!
 
   context 'data and custom done function' ->
     before ->
-      runners.base := base-runner data: 'hello', done-fun: done-fun
+      runners.base := base-runner data: 'hello', on-success: done-fun
       mw.base := new BaseMw
       runners.base.use mw.base
 
@@ -71,12 +71,12 @@ describe 'base runner' ->
       specify 'should be 1' ->
         runners.base.next-index!.should.eql 1
 
-    describe 'run-mw' ->
+    describe 'has-remaining-mw' ->
       specify 'should be true' ->
-        runners.base.run-mw!.should.be.true
+        runners.base.has-remaining-mw!.should.be.true
 
     specify 'should have assigned done-fun function' ->
-      runners.base.done-fun!.should.eql done-fun!
+      runners.base.on-success!.should.eql done-fun!
 
     specify 'should have assigned data' ->
       runners.base.context.data.should.eql 'hello'

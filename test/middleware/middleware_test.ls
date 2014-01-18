@@ -46,7 +46,7 @@ describe 'Middleware' ->
       context 'BaseRunner registered, by name' ->
         before ->
           middleware    := new Middleware 'base'
-          middleware.debug-on!
+          # middleware.debug-on!
 
         describe 'runner' ->
           specify 'sets runner' ->
@@ -63,14 +63,10 @@ describe 'Middleware' ->
           specify 'sets runner' ->
             middleware.runner.should.eql runners.basic
 
-        describe 'run' ->
-          specify 'returns result of default done-fun' ->
-              middleware.run!.should.eql BaseRunner.done-fun!
-
       context 'using registered base and passing ctx' ->
         before ->
           middleware    := new Middleware 'base', data: 'hello'
-          middleware.debug-on!
+          # middleware.debug-on!
 
         describe 'runner' ->
           specify 'sets runner' ->
@@ -88,7 +84,8 @@ describe 'Middleware' ->
         before ->
           mw.base = new BaseMw
           middleware.use mw.base
-          runners.basic.done-fun = done-fun
+          runners.basic.on-success = done-fun
+          middleware.runner = runners.basic
 
         describe 'registered component' ->
           specify 'in registry middleware list' ->
@@ -98,6 +95,33 @@ describe 'Middleware' ->
             middleware.registry.middlewares[mw.base.name].should.eql mw.base
 
         describe 'run' ->
+          before ->
+            mw.base = new BaseMw
+            middleware.use mw.base
+            runners.basic.on-success = done-fun
+            runners.basic.clean!
+            middleware.runner = runners.basic
+            # middleware.runner.debug-on!
+
+          describe 'runner' ->
+            before ->
+              middleware.runner.clean!
+
+            specify 'has set on-success' ->
+              middleware.runner.on-success.should.eql done-fun
+
+            describe 'index' ->
+              specify 'is 0' ->
+                middleware.runner.index.should.eql 0
+
+            describe 'middleware-list' ->
+              specify 'is not empty' ->
+                middleware.runner.middleware-list!.should.not.eql []
+
+            describe 'has-remaining-mw' ->
+              specify 'it has' ->
+                middleware.runner.has-remaining-mw!.should.be.true
+
           specify 'returns result of done-fun' ->
             middleware.run!.should.eql done-fun!
 
@@ -109,4 +133,4 @@ describe 'Middleware' ->
               middleware.results!.should.not.eql {}
 
             specify 'set by name of component' ->
-              expect(middleware.results!['base']).should.not.eql void
+              middleware.results!['BaseMw'].success.should.eql true

@@ -35,6 +35,9 @@ module.exports = class Middleware implements Debugger
   run: ->
     @runner.run!
 
+  clean: ->
+    @runner.clean!
+
   @get-registered = (name) ->
     unless @@runners[name]
       throw Error "No such pre-registered runner #{name}, must be one of: #{@@runners}"

@@ -12,26 +12,26 @@ module.exports = class BaseRunner implements Debugger
     @index = 0
 
     if _.is-type 'Object', @context
-      done-fun = @context.done-fun
-      error-fun = @context.error-fun
+      success-fun = @context.on-success
+      error-fun   = @context.on-error
       # setup function to run if all middleware is passed through
-      if  _.is-type 'Function', done-fun
-        @done-fun = done-fun
+      if  _.is-type 'Function', success-fun
+        @on-success = success-fun
 
       if  _.is-type 'Function', error-fun
-        @error-fun = error-fun
+        @on-error   = error-fun
 
-    @done-fun  ||= @@done-fun
-    @error-fun ||= @@error-fun
+    @on-success ||= @@on-success
+    @on-error   ||= @@on-error
 
     @registry = new MiddlewareRegistry
 
-  @done-fun = ->
+  @on-success = ->
     success: @success
     errors:  @errors
     results: @results
 
-  @error-fun = ->
+  @on-error = ->
     @errors
 
   use: (middleware) ->
@@ -60,7 +60,7 @@ module.exports = class BaseRunner implements Debugger
   add-result: (result) ->
     @results[@current-middleware!.name] = result
 
-  run-mw: ->
+  has-remaining-mw: ->
     @middleware-list!.length > @index
 
   # return next index
@@ -72,17 +72,20 @@ module.exports = class BaseRunner implements Debugger
     @index++
 
   run: ->
-    if @run-mw!
-      @add-result @run-current!
-      @inc-index!
-      @run!
+    @run-mw! if @has-remaining-mw!
     @result!
+
+  run-mw: ->
+    @debug 'run-mw', @index
+    @add-result @run-current!
+    @inc-index!
+    @run!
 
   result: ->
     if @has-errors!
-      @error-fun!
+      @on-error!
     else
-      @done-fun!
+      @on-success!
 
   has-errors: ->
     not lo.is-empty @errors
@@ -91,4 +94,4 @@ module.exports = class BaseRunner implements Debugger
     @current-mw!.run @
 
   current-mw: ->
-    @registry.at(@index)
+    @registry.at @index

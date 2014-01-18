@@ -7,7 +7,6 @@ Here we create a `Middleware` with a `ModelRunner` and register the `Mw` compone
 
 ```LiveScript
 Middleware.register model: ModelRunner
-
 model-middleware = new Middleware('model').use(authorizer).use(validator)
 ```
 
@@ -33,17 +32,21 @@ your own name as shown in code above.
 The `BaseRunner` is a base class that provides the base functionality for any middleware runner.
 A typical runner such as `ModelRunner` (see *model-mw* project) extends `BaseRunner` to be specialized for operating with models.
 
-When constructed, it can be passed a `done-fun` function which is returned if all middlewares are run successfully.
-It can also take an `error-fun` which is called when one or more middlewares cause an error.
+When constructed, it can be passed a `on-success` function which is returned if all middlewares are run successfully.
+It can also take an `on-error` function which is called when one or more middlewares cause an error.
 
-The result of `run` dtermines if `done-fun` or `error-fun` is called (depending on the results).
+The result of `run` determines if `on-success` or `on-error` is called, depending on whether `runner.errors` is empty or not.
 
 ```LiveScript
 my-done-fun = ->
-  'is done :)"
+  "Success :)"
+
+error-fun = ->
+  error: true
+  errors: @errors
 
 mw.base     = new BaseMw name: 'my mw'
-base-runner = new BaseRunner done-fun: my-done-fun
+base-runner = new BaseRunner on-success: my-done-fun, on-error: error-fun
 base-runner.use mw.base
 base-runner.run!
 ```
@@ -63,10 +66,12 @@ The method `register` is used internally by `Runner` when `use` is called with a
 For `Middleware` it delegates `use` to `runner.use`.
 
 ```LiveScript
-# creates a new Middleware instance with an empty registry for Mw components
+Middleware.register model: ModelRunner
+
+# creates a Middleware instance with registry for Mw components
 middleware = new Middleware 'model'
 
-# registers the authorizer (AuthorizationMw instance) in the empty registry
+# registers the authorizer mw-component
 middleware.use authorizer
 ```
 
@@ -96,4 +101,4 @@ Easy :)
 
 ## Contribution
 
-Please do!
+Please suggest improvements and help improve this project :)
