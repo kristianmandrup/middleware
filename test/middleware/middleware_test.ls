@@ -73,6 +73,12 @@ describe 'Middleware' ->
           specify 'sets runner' ->
             middleware.runner.constructor.should.eql BaseRunner
 
+          specify 'runner has context' ->
+            middleware.runner.context.should.eql data: 'hello'
+
+          specify 'runner has context with data' ->
+            middleware.runner.context.data.should.eql 'hello'
+
 
     describe 'use' ->
       context 'using simple mw' ->
