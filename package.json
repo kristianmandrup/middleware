@@ -1,7 +1,7 @@
 {
   "name":     "middleware",
   "version":  "0.0.2",
-  "main":     "./index.js",
+  "main":     "index",
   "author":   "Kristian Mandrup <kmandrup@gmail.com>",
   "description": "a simple middleware infrastructure",
   "contributors": [
@@ -20,7 +20,7 @@
     "basic"
   ],
   "scripts": {
-    "start": "node index.js"
+    "test": "mocha"
   },
   "dependencies": {
     "lodash":           "*",
