@@ -24,43 +24,69 @@ describe 'Middleware' ->
       specify 'is a BaseRunner' ->
         Middleware.default-runner!.constructor.should.be.eql BaseRunner
 
+    describe 'runners' ->
+      specify 'is empty' ->
+          Middleware.runners.should.eql {}
+
+    describe 'register' ->
+      context 'register base: BaseRunner' ->
+        before ->
+          Middleware.register base: BaseRunner
+
+        specify 'registered BaseRunner as base' ->
+            Middleware.runners.base.should.eql BaseRunner
+
   describe 'instance' ->
     var runner-ctx
 
     describe 'create' ->
-      context 'no mw components registered' ->
+      context 'BaseRunner registered, by name' ->
         before ->
-          mw.simple     := new BaseMw
+          middleware    := new Middleware 'base'
+          middleware.debug-on!
+
+        describe 'runner' ->
+          specify 'sets runner' ->
+            middleware.runner.constructor.should.eql BaseRunner
+
+      context 'BaseRunner with no mw components registered' ->
+        before ->
           runners.basic := new BaseRunner runner-ctx
           ctx           :=
-            context: runners.basic
+            runner: runners.basic
           middleware    := new Middleware ctx
 
         describe 'runner' ->
           specify 'sets runner' ->
             middleware.runner.should.eql runners.basic
 
-        describe 'index' ->
-          specify 'inits to 0' ->
-            middleware.index.should.eql 0
-
         describe 'run' ->
           specify 'returns result of default done-fun' ->
               middleware.run!.should.eql BaseRunner.done-fun!
+
+      context 'using registered base and passing ctx' ->
+        before ->
+          middleware    := new Middleware 'base', data: 'hello'
+          middleware.debug-on!
+
+        describe 'runner' ->
+          specify 'sets runner' ->
+            middleware.runner.constructor.should.eql BaseRunner
 
 
     describe 'use' ->
       context 'using simple mw' ->
         before ->
-          middleware.use mw.simple
+          mw.base = new BaseMw
+          middleware.use mw.base
           runners.basic.done-fun = done-fun
 
         describe 'registered component' ->
           specify 'in registry middleware list' ->
-            middleware.registry.middleware-list![0].should.eql mw.simple
+            middleware.registry.middleware-list![0].should.eql mw.base
 
           specify 'in middlewares by name' ->
-            middleware.registry.middlewares[mw.simple.name].should.eql mw.simple
+            middleware.registry.middlewares[mw.base.name].should.eql mw.base
 
         describe 'run' ->
           context '' ->

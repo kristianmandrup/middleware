@@ -10,8 +10,10 @@ MiddlewareRegistry  = requires.file 'mw/registry'
 
 module.exports = class Middleware implements Debugger
   (@context) ->
+    _.last arguments
     if _.is-type('String', @context)
-      @context = @@get-registered @context
+      runner-class = @@get-registered @context
+      @context = runner: new runner-class
 
     unless _.is-type 'Object', @context
       throw Error "Context must be an Object, was: #{typeof @context}, #{@context}"
@@ -27,13 +29,17 @@ module.exports = class Middleware implements Debugger
     @registry.register middleware
 
   run: ->
-    @runner.run
+    @runner.run!
 
   @get-registered = (name) ->
     unless @@runners[name]
       throw Error "No such pre-registered runner #{name}, must be one of: #{@@runners}"
-    @context = @@runners[context]
+    @@runners[name]
+
+  @runners = {}
 
   @register = (runners) ->
-      @@runners = runners
+    unless _.is-type 'Object', runners
+      throw Error "to register runners pass a runners hash, was: #{runners}"
+    @@runners = runners
 

@@ -6,6 +6,8 @@ Here we create a `Middleware` with a `ModelRunner` and register the `Mw` compone
  `authorizer` and `validator` to be run by the ModelRunner.
 
 ```LiveScript
+Middleware.register model: ModelRunner
+
 model-middleware = new Middleware('model').use(authorizer).use(validator)
 ```
 

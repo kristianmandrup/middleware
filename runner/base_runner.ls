@@ -8,19 +8,22 @@ MiddlewareRegistry  = requires.file 'mw/registry'
 
 # TODO: Should save result of each component in result list, including errors
 module.exports = class BaseRunner implements Debugger
-  (@done-fun) ->
+  (@context) ->
     # index of current middle-ware running
     @index = 0
 
-    # setup function to run if all middleware is passed through
-    unless _.is-type 'Function', @done-fun
-      @done-fun = @@done-fun
+    if _.is-type 'Object', @context
+      done-fun = @context.done-fun
+      # setup function to run if all middleware is passed through
+      if  _.is-type 'Function', done-fun
+        @done-fun ||= done-fun
 
+    @done-fun ||= @@done-fun
     @registry = new MiddlewareRegistry
 
   @done-fun = ->
-    success: true
-    errors:  {}
+    success: @success
+    errors:  @errors
 
   results: {}
 
