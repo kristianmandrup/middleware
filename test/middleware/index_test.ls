@@ -10,17 +10,24 @@ assert = require('chai').assert
 
 middleware = requires.file 'index'
 
+BaseMw      = middleware.Mw.base
+Registry    = middleware.Mw.registry
+BaseRunner  = middleware.Runner.base
+Middleware  = middleware.Middleware
+
 describe 'index' ->
   describe 'Mw' ->
+    before ->
+      console.log BaseMw
     specify 'base' ->
-      middleware.Mw.base.should.not.eql void
+      BaseMw.display-name.should.eql 'BaseMw'
 
     specify 'registry' ->
-      middleware.Mw.registry.should.not.eql void
+      Registry.display-name.should.eql 'MiddlewareRegistry'
 
   describe 'Runner' ->
     specify 'base' ->
-      middleware.Runner.base.should.not.eql void
+      BaseRunner.display-name.should.eql 'BaseRunner'
 
   describe 'middleware' ->
     specify 'is function' ->
@@ -28,5 +35,5 @@ describe 'index' ->
 
   describe 'Middleware' ->
     specify 'is there' ->
-      middleware.Middleware.should.not.eql void
+      Middleware.display-name.should.eql 'Middleware'
 
