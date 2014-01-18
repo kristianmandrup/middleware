@@ -16,7 +16,7 @@ module.exports = class BaseRunner implements Debugger
       done-fun = @context.done-fun
       # setup function to run if all middleware is passed through
       if  _.is-type 'Function', done-fun
-        @done-fun ||= done-fun
+        @done-fun = done-fun
 
     @done-fun ||= @@done-fun
     @registry = new MiddlewareRegistry
@@ -24,6 +24,16 @@ module.exports = class BaseRunner implements Debugger
   @done-fun = ->
     success: @success
     errors:  @errors
+
+  use: (middleware) ->
+    @registry.register middleware
+
+  clean: ->
+    @results  = {}
+    @index    = 0
+
+  success:  true
+  errors:   []
 
   results: {}
 
@@ -39,29 +49,26 @@ module.exports = class BaseRunner implements Debugger
   add-result: (result) ->
     @results[@current-middleware!.name] = result
 
-  run-next-mw: ->
-    @middleware-list.length >= @next-index
+  run-mw: ->
+    @middleware-list!.length > @index
 
   # return next index
   next-index: ->
-    @index ||= 0
-    @index +1
+    @index + 1
 
   # increase number of middleware index
   inc-index: ->
-    @index ||= 0
     @index++
 
   run: ->
-    if @run-next-mw!
-      @add-result @run-next!
+    if @run-mw!
+      @add-result @run-current!
       @inc-index!
-      @run
-    else
-      @done-fun!
+      @run!
+    @done-fun!
 
-  run-next: ->
-    @next-mw!.run @
+  run-current: ->
+    @current-mw!.run @
 
-  next-mw: ->
-    @registry.at(@next-index)
+  current-mw: ->
+    @registry.at(@index)

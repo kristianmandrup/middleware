@@ -4,6 +4,9 @@ requires  = rek 'requires'
 
 requires.test 'test_setup'
 
+assert = require('chai').assert
+expect = require('chai').expect
+
 BaseMw       = requires.file 'mw/base_mw'
 BaseRunner   = requires.file 'runner/base_runner'
 Middleware   = requires.file 'middleware'
@@ -95,6 +98,15 @@ describe 'Middleware' ->
             middleware.registry.middlewares[mw.base.name].should.eql mw.base
 
         describe 'run' ->
-          context '' ->
+          specify 'returns result of done-fun' ->
+            middleware.run!.should.eql done-fun!
+
+          describe 'results' ->
             before ->
-              middleware.run!.should.eql done-fun!
+              middleware.run!
+
+            specify 'is not empty' ->
+              middleware.results!.should.not.eql {}
+
+            specify 'set by name of component' ->
+              expect(middleware.results!['base']).should.not.eql void

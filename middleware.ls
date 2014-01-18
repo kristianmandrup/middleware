@@ -16,9 +16,6 @@ module.exports = class Middleware implements Debugger
       runner-class = @@get-registered name
       @context = runner: new runner-class ctx
 
-
-
-
     unless _.is-type 'Object', @context
       throw Error "Context must be an Object, was: #{typeof @context}, #{@context}"
 
@@ -30,7 +27,10 @@ module.exports = class Middleware implements Debugger
     new BaseRunner context
 
   use: (middleware) ->
-    @registry.register middleware
+    @runner.use middleware
+
+  results: ->
+    @runner.results
 
   run: ->
     @runner.run!
