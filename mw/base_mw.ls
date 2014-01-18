@@ -17,4 +17,5 @@ module.exports = class BaseMw implements Debugger
     @name ||= @constructor.display-name
 
   run: ->
-    true
+    success: true
+    errors: {}

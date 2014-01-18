@@ -10,12 +10,14 @@ MiddlewareRegistry  = requires.file 'mw/registry'
 
 module.exports = class Middleware implements Debugger
   (@context) ->
-    unless _.is-type 'Object', context
-      throw Error "Context must be an Object, was: #{typeof context}, #{context}"
+    if _.is-type('String', @context)
+      @context = @@get-registered @context
 
-    @runner = context.runner
-    @runner ||= @@default-runner context
-    @index  = 0
+    unless _.is-type 'Object', @context
+      throw Error "Context must be an Object, was: #{typeof @context}, #{@context}"
+
+    @runner = @context.runner
+    @runner ||= @@default-runner @context
     @registry = @runner.registry
 
   @default-runner = (context) ->
@@ -24,22 +26,14 @@ module.exports = class Middleware implements Debugger
   use: (middleware) ->
     @registry.register middleware
 
-  run-next-mw: (index) ->
-    @middleware-list.length >= next-index
-
-  # return next index
-  next-index: ->
-    @index ||= 0
-    @index +1
-
-  # increase number of middleware index
-  inc-index: ->
-    @index ||= 0
-    @index++
-
   run: ->
-    if @run-next-mw then @run-next! else @done-fun!
-    @inc-index!
+    @runner.run
 
-  run-next: ->
-    @registry.at(@next-index).run @runner
+  @get-registered = (name) ->
+    unless @@runners[name]
+      throw Error "No such pre-registered runner #{name}, must be one of: #{@@runners}"
+    @context = @@runners[context]
+
+  @register = (runners) ->
+      @@runners = runners
+

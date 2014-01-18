@@ -18,18 +18,47 @@ module.exports = class BaseRunner implements Debugger
 
     @registry = new MiddlewareRegistry
 
-  name: 'basic'
-
   @done-fun = ->
-    true
+    success: true
+    errors:  {}
 
-  middlewares: []
+  results: {}
 
-  next: ->
-    nextIndex = @index++
+  middlewares: ->
+    @registry.middlewares
 
-    if @middlewares.length >= nextIndex
-      nextMiddleware = @middlewares nextIndex
-      nextMiddleware.run @
+  middleware-list: ->
+    @registry.middleware-list!
+
+  current-middleware: ->
+    @middleware-list![@index]
+
+  add-result: (result) ->
+    @results[@current-middleware!.name] = result
+
+  run-next-mw: ->
+    @middleware-list.length >= @next-index
+
+  # return next index
+  next-index: ->
+    @index ||= 0
+    @index +1
+
+  # increase number of middleware index
+  inc-index: ->
+    @index ||= 0
+    @index++
+
+  run: ->
+    if @run-next-mw!
+      @add-result @run-next!
+      @inc-index!
+      @run
     else
-      doneFun!
+      @done-fun!
+
+  run-next: ->
+    @next-mw!.run @
+
+  next-mw: ->
+    @registry.at(@next-index)
