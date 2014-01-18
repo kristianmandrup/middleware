@@ -11,20 +11,46 @@ Middleware.register model: ModelRunner
 model-middleware = new Middleware('model').use(authorizer).use(validator)
 ```
 
+## BaseMw
+
+The `BaseMw` is a base class for any Mw-component (middleware component).
+Each Mw-component is assigned a runner which is responsible for running the components and
+maintains the global middleware state (including the result of running each Mw-component)
+
+Each Mw-component has a run method which executes it and returns a result which is stored by the runner in a
+results Object (see `BaseRunner`)
+
+```LiveScript
+mw.base = new BaseMw name: 'my mw'
+mw.base.run!
+```
+
+By default a Mw-component is named as per the class, but you can override this default naming by passing
+your own name as shown in code above.
+
 ## BaseRunner
 
 The `BaseRunner` is a base class that provides the base functionality for any middleware runner.
 A typical runner such as `ModelRunner` (see *model-mw* project) extends `BaseRunner` to be specialized for operating with models.
 
-## BaseMw
+When constructed, it can be passed a `done-fun` function which is returned if all middlewares are run successfully.
+It can also take an `error-fun` which is called when one or more middlewares cause an error.
 
-The `BaseMw` is a base class for any Mw-component (middleware component) . Each Mw-component is
-assigned a runner which is responsible for running the components and maintains the global middleware
-state (including the result of running each Mw-component)
+The result of `run` dtermines if `done-fun` or `error-fun` is called (depending on the results).
+
+```LiveScript
+my-done-fun = ->
+  'is done :)"
+
+mw.base     = new BaseMw name: 'my mw'
+base-runner = new BaseRunner done-fun: my-done-fun
+base-runner.use mw.base
+base-runner.run!
+```
 
 ## Registry
 
-A Registry is used to register (store) a set of Middleware components for a given Runner.
+A Registry is used to register (store) a set of Mw-components for a given Runner.
 
 Create registry with empty `middlewares` object
 
@@ -33,14 +59,41 @@ registry = new Registry
 registry.register authorizer
 ```
 
-It is used internally by Middleware when `use` is called:
-
-Registers authorizer
+The method `register` is used internally by `Runner` when `use` is called with a Mw-component.
+For `Middleware` it delegates `use` to `runner.use`.
 
 ```LiveScript
 # creates a new Middleware instance with an empty registry for Mw components
 middleware = new Middleware 'model'
 
 # registers the authorizer (AuthorizationMw instance) in the empty registry
-middleware.use authorizer)
+middleware.use authorizer
 ```
+
+Enjoy!
+
+## Related projects
+
+Please see:
+
+* model-mw
+* authorization-mw
+* validation-mw
+
+## Testing
+
+Using *mocha*
+
+Run all test
+
+`$ mocha`
+
+Run particular test
+
+`$ mocha test/middleware/runner/base_runner_test.js`
+
+Easy :)
+
+## Contribution
+
+Please do!

@@ -26,11 +26,10 @@ describe 'base runner' ->
     specify 'should be a BaseRunner' ->
       runners.base.constructor.should.be.eql BaseRunner
 
-    specify 'should have assigned done-fun function' ->
-      runners.base.done-fun!.should.be.eql {
-        success: true
-        errors: []
-      }
+    specify 'should have assigned default done-fun function' ->
+      runners.base.done-fun!.success.should.be.true
+      runners.base.done-fun!.errors.should.eql {}
+      runners.base.done-fun!.results.should.eql {}
 
     describe 'results' ->
       specify 'should be empty' ->
@@ -76,15 +75,27 @@ describe 'base runner' ->
       specify 'should be true' ->
         runners.base.run-mw!.should.be.true
 
-    specify 'should have assigned doneFun function' ->
+    specify 'should have assigned done-fun function' ->
       runners.base.done-fun!.should.eql done-fun!
 
     specify 'should have assigned data' ->
       runners.base.context.data.should.eql 'hello'
 
     describe 'run' ->
+      var result
+      before ->
+        result := runners.base.run!
+
+      describe 'errors' ->
+        specify 'should be empty' ->
+          runners.base.errors.should.eql {}
+
+      describe 'has-errors' ->
+        specify 'should be false' ->
+          runners.base.has-errors!.should.be.false
+
       specify 'should return done-fun result' ->
-        runners.base.run!.should.eql done-fun!
+        result.should.eql done-fun!
 
     describe 'add-result' ->
       before ->
@@ -101,3 +112,24 @@ describe 'base runner' ->
 
       specify 'should include success' ->
         runners.base.results['BaseMw'].success.should.be.true
+
+    describe 'cause error' ->
+      var errors
+
+      before ->
+        errors := {'error': 'oops!'}
+        runners.base.clean!
+        runners.base.errors = errors
+
+      describe 'errors' ->
+        specify 'should not be empty' ->
+          runners.base.errors.should.eql errors
+
+      describe 'has-errors' ->
+        specify 'should be true' ->
+          runners.base.errors.should.eql errors
+          runners.base.has-errors!.should.be.true
+
+      describe 'result' ->
+        specify 'should return errors' ->
+          runners.base.run!.should.eql errors

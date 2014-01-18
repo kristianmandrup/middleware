@@ -1,12 +1,11 @@
 _         = require 'prelude-ls'
+lo        = require 'lodash'
 rek       = require 'rekuire'
 requires  = rek 'requires'
 
 Debugger            = requires.file 'debugger'
-
 MiddlewareRegistry  = requires.file 'mw/registry'
 
-# TODO: Should save result of each component in result list, including errors
 module.exports = class BaseRunner implements Debugger
   (@context) ->
     # index of current middle-ware running
@@ -14,16 +13,26 @@ module.exports = class BaseRunner implements Debugger
 
     if _.is-type 'Object', @context
       done-fun = @context.done-fun
+      error-fun = @context.error-fun
       # setup function to run if all middleware is passed through
       if  _.is-type 'Function', done-fun
         @done-fun = done-fun
 
-    @done-fun ||= @@done-fun
+      if  _.is-type 'Function', error-fun
+        @error-fun = error-fun
+
+    @done-fun  ||= @@done-fun
+    @error-fun ||= @@error-fun
+
     @registry = new MiddlewareRegistry
 
   @done-fun = ->
     success: @success
     errors:  @errors
+    results: @results
+
+  @error-fun = ->
+    @errors
 
   use: (middleware) ->
     @registry.register middleware
@@ -31,9 +40,11 @@ module.exports = class BaseRunner implements Debugger
   clean: ->
     @results  = {}
     @index    = 0
+    @success  = true
+    @errors   = {}
 
   success:  true
-  errors:   []
+  errors:   {}
 
   results: {}
 
@@ -65,7 +76,16 @@ module.exports = class BaseRunner implements Debugger
       @add-result @run-current!
       @inc-index!
       @run!
-    @done-fun!
+    @result!
+
+  result: ->
+    if @has-errors!
+      @error-fun!
+    else
+      @done-fun!
+
+  has-errors: ->
+    not lo.is-empty @errors
 
   run-current: ->
     @current-mw!.run @
