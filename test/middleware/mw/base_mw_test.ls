@@ -54,7 +54,24 @@ describe 'BaseMw' ->
           runners.base.run!
 
         specify 'adds to runner errors' ->
-          runners.base.errors['BaseMw'].should.eql 'very bad stuff!'
+          runners.base.errors['BaseMw'].should.eql ['very bad stuff!']
+
+      context 'Mw-component run method causes two errors!' ->
+        errors = {a: 'very bad stuff!', b: 'more baaaad'}
+        before ->
+
+          mw.base := new BaseMw
+          runners.base.clean!
+          runners.base.use mw.base
+          mw.base.run = ->
+            @error errors.a
+            @error errors.b
+
+          runners.base.run!
+
+        specify 'adds to runner errors' ->
+          runners.base.errors['BaseMw'].should.eql [errors.a, errors.b]
+
 
     describe 'abort' ->
       context 'Mw-component run method causes error' ->

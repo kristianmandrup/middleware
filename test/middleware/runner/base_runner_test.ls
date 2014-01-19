@@ -146,7 +146,7 @@ describe 'base runner' ->
           runners.base.run!
 
         specify 'adds to runner errors' ->
-          runners.base.errors['BaseMw'].should.eql 'very bad stuff!'
+          runners.base.errors['BaseMw'].should.eql ['very bad stuff!']
 
     describe 'abort' ->
       context 'Mw-component run method causes error' ->
@@ -171,3 +171,24 @@ describe 'base runner' ->
 
         specify 'current-middleware is middleware which aborted: BaseMw' ->
           runners.base.current-middleware!.name.should.eql 'BaseMw'
+
+    describe 'is-success' ->
+      context 'success is false' ->
+        before ->
+          mw.base := new BaseMw
+          mw.next := new BaseMw name: 'next'
+          runners.base.clean!
+          runners.base.success = false
+          runners.base.use(mw.base).use(mw.next)
+          mw.base.run = ->
+            @success!
+
+        specify 'success is false' ->
+          runners.base.success.should.be.false
+
+        context 'runner is run' ->
+          before ->
+            runners.base.run!
+
+          specify 'success is true' ->
+            runners.base.success.should.be.true

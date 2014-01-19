@@ -45,7 +45,12 @@ module.exports = class BaseRunner implements Debugger
     @aborted-by = @current-middleware!.name
 
   error: (msg) ->
-    @errors[@current-middleware!.name] = msg
+    @errors[@current-middleware!.name] ||= []
+    @errors[@current-middleware!.name].push msg
+
+  # override as you like!
+  is-success: ->
+    @success = true
 
   clean: ->
     @results  = {}
