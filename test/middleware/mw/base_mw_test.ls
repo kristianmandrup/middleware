@@ -41,3 +41,41 @@ describe 'BaseMw' ->
       describe 'runner' ->
         specify 'should be set' ->
           mw.base.runner.should.be.eql runners.base
+
+    describe 'error' ->
+      context 'Mw-component run method causes error' ->
+        before ->
+          mw.base := new BaseMw
+          runners.base.clean!
+          runners.base.use mw.base
+          mw.base.run = ->
+            @error 'very bad stuff!'
+
+          runners.base.run!
+
+        specify 'adds to runner errors' ->
+          runners.base.errors['BaseMw'].should.eql 'very bad stuff!'
+
+    describe 'abort' ->
+      context 'Mw-component run method causes error' ->
+        before ->
+          mw.base := new BaseMw
+          mw.next := new BaseMw name: 'next'
+          runners.base.clean!
+          runners.base.use(mw.base).use(mw.next)
+          mw.base.run = ->
+            @abort!
+
+          runners.base.run!
+
+        specify 'aborted is true' ->
+          runners.base.aborted.should.be.true
+
+        specify 'aborted-by is BaseMw' ->
+          runners.base.aborted-by.should.eql 'BaseMw'
+
+        specify 'index is still 0' ->
+          runners.base.index.should.eql 0
+
+        specify 'current-middleware is middleware which aborted: BaseMw' ->
+          runners.base.current-middleware!.name.should.eql 'BaseMw'
