@@ -163,6 +163,9 @@ describe 'base runner' ->
         specify 'aborted is true' ->
           runners.base.aborted.should.be.true
 
+        specify 'success is false' ->
+          runners.base.success.should.be.false
+
         specify 'aborted-by is BaseMw' ->
           runners.base.aborted-by.should.eql 'BaseMw'
 

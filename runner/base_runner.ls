@@ -42,6 +42,7 @@ module.exports = class BaseRunner implements Debugger
 
   abort: ->
     @aborted = true
+    @success = false
     @aborted-by = @current-middleware!.name
 
   error: (msg) ->
