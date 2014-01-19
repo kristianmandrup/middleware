@@ -17,8 +17,6 @@ Middleware  = middleware.Middleware
 
 describe 'index' ->
   describe 'Mw' ->
-    before ->
-      console.log BaseMw
     specify 'base' ->
       BaseMw.display-name.should.eql 'BaseMw'
 
