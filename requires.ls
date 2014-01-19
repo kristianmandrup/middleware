@@ -47,7 +47,9 @@ module.exports =
     @factory path
 
   file: (path) ->
-    require full-path('.', path)
+    p = full-path('.', path)
+    # console.log 'requires.file', p
+    require p
 
   # m - alias for module
   m: (path) ->

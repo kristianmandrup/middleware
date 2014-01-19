@@ -75,7 +75,27 @@ middleware = new Middleware 'model'
 middleware.use authorizer
 ```
 
-Enjoy!
+## Error
+
+You can cause an error simply by issuing `error(msg)` from within an mw-component. This will add the error
+to the `errors` object of the Runner, for the mw-component in question.
+
+This will not abort further execution, but will mean that when the runner finishes execution the errors object is returned
+not the result of execution.
+
+```LiveScript
+mw.base.run = ->
+  @error 'Some stupid shit happened!'
+```
+
+## Aborting
+
+You can abort further mw-component executin by the runner, simply by issuing `abort!` in the mw-component.
+
+```LiveScript
+mw.base.run = ->
+  @abort!
+```
 
 ## Related projects
 

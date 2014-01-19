@@ -71,9 +71,9 @@ describe 'base runner' ->
       specify 'should be 1' ->
         runners.base.next-index!.should.eql 1
 
-    describe 'has-remaining-mw' ->
+    describe 'can-run-mw' ->
       specify 'should be true' ->
-        runners.base.has-remaining-mw!.should.be.true
+        runners.base.can-run-mw!.should.be.true
 
     specify 'should have assigned done-fun function' ->
       runners.base.on-success!.should.eql done-fun!
@@ -133,3 +133,41 @@ describe 'base runner' ->
       describe 'result' ->
         specify 'should return errors' ->
           runners.base.run!.should.eql errors
+
+    describe 'error' ->
+      context 'Mw-component run method causes error' ->
+        before ->
+          mw.base := new BaseMw
+          runners.base.clean!
+          runners.base.use mw.base
+          mw.base.run = ->
+            @error 'very bad stuff!'
+
+          runners.base.run!
+
+        specify 'adds to runner errors' ->
+          runners.base.errors['BaseMw'].should.eql 'very bad stuff!'
+
+    describe 'abort' ->
+      context 'Mw-component run method causes error' ->
+        before ->
+          mw.base := new BaseMw
+          mw.next := new BaseMw name: 'next'
+          runners.base.clean!
+          runners.base.use(mw.base).use(mw.next)
+          mw.base.run = ->
+            @abort!
+
+          runners.base.run!
+
+        specify 'aborted is true' ->
+          runners.base.aborted.should.be.true
+
+        specify 'aborted-by is BaseMw' ->
+          runners.base.aborted-by.should.eql 'BaseMw'
+
+        specify 'index is still 0' ->
+          runners.base.index.should.eql 0
+
+        specify 'current-middleware is middleware which aborted: BaseMw' ->
+          runners.base.current-middleware!.name.should.eql 'BaseMw'

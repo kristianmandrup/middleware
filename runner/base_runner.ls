@@ -10,6 +10,7 @@ module.exports = class BaseRunner implements Debugger
   (@context) ->
     # index of current middle-ware running
     @index = 0
+    @aborted = false
 
     if _.is-type 'Object', @context
       success-fun = @context.on-success
@@ -35,13 +36,23 @@ module.exports = class BaseRunner implements Debugger
     @errors
 
   use: (middleware) ->
+    middleware.runner = @
     @registry.register middleware
+    @
+
+  abort: ->
+    @aborted = true
+    @aborted-by = @current-middleware!.name
+
+  error: (msg) ->
+    @errors[@current-middleware!.name] = msg
 
   clean: ->
     @results  = {}
     @index    = 0
     @success  = true
     @errors   = {}
+    @aborted  = false
 
   success:  true
   errors:   {}
@@ -60,7 +71,8 @@ module.exports = class BaseRunner implements Debugger
   add-result: (result) ->
     @results[@current-middleware!.name] = result
 
-  has-remaining-mw: ->
+  can-run-mw: ->
+    return false if @aborted
     @middleware-list!.length > @index
 
   # return next index
@@ -72,12 +84,13 @@ module.exports = class BaseRunner implements Debugger
     @index++
 
   run: ->
-    @run-mw! if @has-remaining-mw!
+    @run-mw! if @can-run-mw!
     @result!
 
   run-mw: ->
-    @debug 'run-mw', @index
-    @add-result @run-current!
+    result = @run-current-mw!
+    return false if @aborted
+    @add-result result
     @inc-index!
     @run!
 
@@ -90,8 +103,9 @@ module.exports = class BaseRunner implements Debugger
   has-errors: ->
     not lo.is-empty @errors
 
-  run-current: ->
+  run-current-mw: ->
     @current-mw!.run @
+
 
   current-mw: ->
     @registry.at @index

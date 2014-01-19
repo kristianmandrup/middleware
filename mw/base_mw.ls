@@ -12,9 +12,15 @@ module.exports = class BaseMw implements Debugger
         @runner = @context.runner
 
       if _.is-type 'String', @context.name
-        @name = name
+        @name = @context.name
 
     @name ||= @constructor.display-name
+
+  error: (msg) ->
+    @runner.error msg
+
+  abort: ->
+    @runner.abort!
 
   run: ->
     success: true
