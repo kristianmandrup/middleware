@@ -102,16 +102,17 @@ describe 'base runner' ->
         runners.base.clean!
         runners.base.add-result 'a result'
 
-      specify 'should include success' ->
-        runners.base.results['BaseMw'].should.eql 'a result'
+      describe 'results' ->
+        specify 'should have added the result' ->
+          runners.base.results['BaseMw'].should.eql 'a result'
 
     describe 'results' ->
       before ->
         runners.base.clean!
         runners.base.run!
 
-      specify 'should include success' ->
-        runners.base.results['BaseMw'].success.should.be.true
+      specify 'should be success (true)' ->
+        runners.base.results['BaseMw'].should.be.true
 
     describe 'cause error' ->
       var errors
@@ -184,7 +185,7 @@ describe 'base runner' ->
           runners.base.success = false
           runners.base.use(mw.base).use(mw.next)
           mw.base.run = ->
-            @success!
+            @successful!
 
         specify 'success is false' ->
           runners.base.success.should.be.false

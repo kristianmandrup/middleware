@@ -118,9 +118,9 @@ describe 'Middleware' ->
               specify 'is not empty' ->
                 middleware.runner.middleware-list!.should.not.eql []
 
-            describe 'has-remaining-mw' ->
+            describe 'can-run-mw' ->
               specify 'it has' ->
-                middleware.runner.has-remaining-mw!.should.be.true
+                middleware.runner.can-run-mw!.should.be.true
 
           specify 'returns result of done-fun' ->
             middleware.run!.should.eql done-fun!
@@ -130,7 +130,7 @@ describe 'Middleware' ->
               middleware.run!
 
             specify 'is not empty' ->
-              middleware.results!.should.not.eql {}
+              middleware.results!.should.not.be.empty
 
             specify 'set by name of component' ->
-              middleware.results!['BaseMw'].success.should.eql true
+              middleware.results!['BaseMw'].should.eql true

@@ -22,9 +22,24 @@ module.exports = class BaseMw implements Debugger
   abort: ->
     @runner.abort!
 
-  success: ->
+  aborted: ->
+    @runner.aborted
+
+  has-errors: ->
+    @runner.has-errors!
+
+  is-success: ->
     @runner.is-success!
 
+  is-failure: ->
+    @runner.is-failure!
+
+  failure: ->
+    @runner.failure!
+
+  successful: ->
+    @runner.successful!
+
+  # by default just returns true :)
   run: ->
-    success: true
-    errors: {}
+    true

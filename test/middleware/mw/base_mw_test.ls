@@ -85,14 +85,28 @@ describe 'BaseMw' ->
 
           runners.base.run!
 
-        specify 'aborted is true' ->
-          runners.base.aborted.should.be.true
+        describe 'mw-component' ->
+          specify 'aborted is true' ->
+            mw.base.aborted!.should.be.true
 
-        specify 'aborted-by is BaseMw' ->
-          runners.base.aborted-by.should.eql 'BaseMw'
+          specify 'has-errors is false' ->
+            mw.base.has-errors!.should.be.false
 
-        specify 'index is still 0' ->
-          runners.base.index.should.eql 0
+          specify 'is-success is false' ->
+            mw.base.is-success!.should.be.false
 
-        specify 'current-middleware is middleware which aborted: BaseMw' ->
-          runners.base.current-middleware!.name.should.eql 'BaseMw'
+          specify 'is-failure is true' ->
+            mw.base.is-failure!.should.be.true
+
+        describe 'runner' ->
+          specify 'aborted is true' ->
+            runners.base.aborted.should.be.true
+
+          specify 'aborted-by is BaseMw' ->
+            runners.base.aborted-by.should.eql 'BaseMw'
+
+          specify 'index is still 0' ->
+            runners.base.index.should.eql 0
+
+          specify 'current-middleware is middleware which aborted: BaseMw' ->
+            runners.base.current-middleware!.name.should.eql 'BaseMw'
