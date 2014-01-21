@@ -84,8 +84,6 @@ describe 'Middleware' ->
         before ->
           mw.base = new BaseMw
           middleware.use mw.base
-          runners.basic.on-success = done-fun
-          middleware.runner = runners.basic
 
         describe 'registered component' ->
           specify 'in registry middleware list' ->
@@ -94,33 +92,74 @@ describe 'Middleware' ->
           specify 'in middlewares by name' ->
             middleware.registry.middlewares[mw.base.name].should.eql mw.base
 
+      context 'using hash of mw-components' ->
+        before ->
+          mw.base = new BaseMw
+          mw.super = new BaseMw name: 'super-duper'
+          middleware.debug-on!
+          middleware.runner.debug-on!
+
+          middleware.use basic: mw.base, super: mw.super
+
+        describe 'registry' ->
+          var registry
+          before ->
+            registry := middleware.runner.registry
+
+          describe 'registered mw-components' ->
+            specify 'should have basic BaseMw component' ->
+              registry.get('basic').should.eql mw.base
+
+            specify 'should have super BaseMw component' ->
+              registry.get('super').should.eql mw.super
+
+      context 'using list of mw-components' ->
+        before ->
+          mw.base = new BaseMw
+          mw.super = new BaseMw name: 'super-duper'
+          middleware.registry.clean!
+          middleware.use mw.base, mw.super
+
+        describe 'registry' ->
+          var registry
+          before ->
+            registry := middleware.runner.registry
+
+          describe 'registered mw-components' ->
+            specify 'should have basic BaseMw components in register' ->
+              registry.get('base-mw').should.eql mw.base
+
+            specify 'should have super BaseMw components in register' ->
+              registry.get('super-duper').should.eql mw.super
+
         describe 'run' ->
+          var runner
           before ->
             mw.base = new BaseMw
             middleware.use mw.base
-            runners.basic.on-success = done-fun
-            runners.basic.clean!
-            middleware.runner = runners.basic
-            # middleware.runner.debug-on!
+            runner := middleware.runner
+            runner.on-success = done-fun
+            runner.clean!
+
 
           describe 'runner' ->
             before ->
-              middleware.runner.clean!
+              runner.clean!
 
             specify 'has set on-success' ->
-              middleware.runner.on-success.should.eql done-fun
+              runner.on-success.should.eql done-fun
 
             describe 'index' ->
               specify 'is 0' ->
-                middleware.runner.index.should.eql 0
+                runner.index.should.eql 0
 
             describe 'middleware-list' ->
               specify 'is not empty' ->
-                middleware.runner.middleware-list!.should.not.eql []
+                runner.middleware-list!.should.not.eql []
 
             describe 'can-run-mw' ->
               specify 'it has' ->
-                middleware.runner.can-run-mw!.should.be.true
+                runner.can-run-mw!.should.be.true
 
           specify 'returns result of done-fun' ->
             middleware.run!.should.eql done-fun!
@@ -133,4 +172,4 @@ describe 'Middleware' ->
               middleware.results!.should.not.be.empty
 
             specify 'set by name of component' ->
-              middleware.results!['BaseMw'].should.eql true
+              middleware.results!['base-mw'].should.eql true

@@ -2,6 +2,7 @@ _         = require 'prelude-ls'
 lo        = require 'lodash'
 rek       = require 'rekuire'
 requires  = rek 'requires'
+require 'sugar'
 
 Debugger            = requires.file 'debugger'
 MiddlewareRegistry  = requires.file 'mw/registry'
@@ -35,7 +36,8 @@ module.exports = class BaseRunner implements Debugger
   @on-error = ->
     @errors
 
-  use: (mw) ->
+  use-mw: (mw, name) ->
+    # @debug "use-mw", mw, name
     get-mw = (mw, runner) ->
       switch typeof mw
       case 'object'
@@ -46,8 +48,33 @@ module.exports = class BaseRunner implements Debugger
       default
         throw Error "mw must be Mw instance or Mw class, was: #{typeof mw}, #{mw}"
 
-    @registry.register get-mw(mw, @)
+    mw = get-mw(mw, @)
+    @registry.register mw, name
     @
+
+  use: ->
+    self = @
+    mw-components = switch typeof arguments
+    case 'object'
+      _.values(arguments)
+    default
+      arguments
+
+    mw-components = mw-components.flatten!
+
+    if lo.is-empty mw-components
+      throw Error "You must pass one or more arguments with Mw-components to be used, was: #{arguments}"
+
+    mw-components.each (mw) ->
+      switch typeof mw
+      case 'object'
+        if mw.run?
+          self.use-mw mw
+        else
+          _.keys(mw).each (key) ->
+            self.use-mw mw[key], key
+      default
+        throw Erorr "Not a valid mw-component, was: #{typeof mw} #{mw}"
 
   abort: ->
     @aborted = true

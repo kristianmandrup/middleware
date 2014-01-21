@@ -49,6 +49,12 @@ mw.base     = new BaseMw name: 'my mw'
 base-runner = new BaseRunner on-success: my-done-fun, on-error: error-fun
 base-runner.use mw.base
 base-runner.run!
+
+# can also use with hash of Mw-components, registering each by key
+base-runner.use basic: mw.base, super-cool: mw.cool
+
+# or simply by list - default: name from class name, dasherized!
+base-runner.use mw.auth, mw.very-cool
 ```
 
 ## Registry

@@ -21,12 +21,17 @@ module.exports = class MiddlewareRegistry implements Debugger
     return void if @middleware-list!.length is 0
     @middleware-list![index]
 
-  register: (middleware) ->
+  clean: ->
+    @middlewares = {}
+
+  register: (middleware, name) ->
     @debug 'register', middleware
+    name ||= middleware.name
     unless _.is-type('Object', middleware) and middleware.run?
+      console.log "middleware", middleware
       throw Error "Middleware component must be an Object with a run method, was: #{middleware}"
 
-    @middlewares[middleware.name] = middleware
-    @debug 'registered', middleware.name
+    @middlewares[name] = middleware
+    @debug 'registered', name
 
 lo.extend MiddlewareRegistry, Debugger

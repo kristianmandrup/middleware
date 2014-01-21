@@ -3,6 +3,7 @@ requires    = rek 'requires'
 
 _           = require 'prelude-ls'
 lo          =   require 'lodash'
+require 'sugar'
 
 Debugger            = requires.file 'debugger'
 BaseRunner          = requires.file 'runner/base_runner'
@@ -26,8 +27,8 @@ module.exports = class Middleware implements Debugger
   @default-runner = (context) ->
     new BaseRunner context
 
-  use: (middleware) ->
-    @runner.use middleware
+  use: ->
+    @runner.use _.values(arguments).flatten!
 
   results: ->
     @runner.results
