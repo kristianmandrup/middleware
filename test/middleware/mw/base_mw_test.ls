@@ -36,7 +36,7 @@ describe 'BaseMw' ->
 
       describe 'name' ->
         specify 'should be set' ->
-          mw.base.name.should.be.eql BaseMw.name
+          mw.base.name.should.be.eql 'base-mw'
 
       describe 'runner' ->
         specify 'should be set' ->
@@ -54,7 +54,7 @@ describe 'BaseMw' ->
           runners.base.run!
 
         specify 'adds to runner errors' ->
-          runners.base.errors['BaseMw'].should.eql ['very bad stuff!']
+          runners.base.errors['base-mw'].should.eql ['very bad stuff!']
 
       context 'Mw-component run method causes two errors!' ->
         errors = {a: 'very bad stuff!', b: 'more baaaad'}
@@ -70,7 +70,7 @@ describe 'BaseMw' ->
           runners.base.run!
 
         specify 'adds to runner errors' ->
-          runners.base.errors['BaseMw'].should.eql [errors.a, errors.b]
+          runners.base.errors['base-mw'].should.eql [errors.a, errors.b]
 
 
     describe 'abort' ->
@@ -103,10 +103,10 @@ describe 'BaseMw' ->
             runners.base.aborted.should.be.true
 
           specify 'aborted-by is BaseMw' ->
-            runners.base.aborted-by.should.eql 'BaseMw'
+            runners.base.aborted-by.should.eql 'base-mw'
 
           specify 'index is still 0' ->
             runners.base.index.should.eql 0
 
           specify 'current-middleware is middleware which aborted: BaseMw' ->
-            runners.base.current-middleware!.name.should.eql 'BaseMw'
+            runners.base.current-middleware!.name.should.eql 'base-mw'

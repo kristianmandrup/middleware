@@ -35,9 +35,18 @@ module.exports = class BaseRunner implements Debugger
   @on-error = ->
     @errors
 
-  use: (middleware) ->
-    middleware.runner = @
-    @registry.register middleware
+  use: (mw) ->
+    get-mw = (mw, runner) ->
+      switch typeof mw
+      case 'object'
+        mw.runner = runner
+        mw
+      case 'function'
+        new mw runner: runner
+      default
+        throw Error "mw must be Mw instance or Mw class, was: #{typeof mw}, #{mw}"
+
+    @registry.register get-mw(mw, @)
     @
 
   abort: ->
@@ -119,7 +128,6 @@ module.exports = class BaseRunner implements Debugger
 
   run-current-mw: ->
     @current-mw!.run @
-
 
   current-mw: ->
     @registry.at @index

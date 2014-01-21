@@ -104,7 +104,7 @@ describe 'base runner' ->
 
       describe 'results' ->
         specify 'should have added the result' ->
-          runners.base.results['BaseMw'].should.eql 'a result'
+          runners.base.results['base-mw'].should.eql 'a result'
 
     describe 'results' ->
       before ->
@@ -112,7 +112,7 @@ describe 'base runner' ->
         runners.base.run!
 
       specify 'should be success (true)' ->
-        runners.base.results['BaseMw'].should.be.true
+        runners.base.results['base-mw'].should.be.true
 
     describe 'cause error' ->
       var errors
@@ -147,7 +147,7 @@ describe 'base runner' ->
           runners.base.run!
 
         specify 'adds to runner errors' ->
-          runners.base.errors['BaseMw'].should.eql ['very bad stuff!']
+          runners.base.errors['base-mw'].should.eql ['very bad stuff!']
 
     describe 'abort' ->
       context 'Mw-component run method causes error' ->
@@ -168,13 +168,13 @@ describe 'base runner' ->
           runners.base.success.should.be.false
 
         specify 'aborted-by is BaseMw' ->
-          runners.base.aborted-by.should.eql 'BaseMw'
+          runners.base.aborted-by.should.eql 'base-mw'
 
         specify 'index is still 0' ->
           runners.base.index.should.eql 0
 
         specify 'current-middleware is middleware which aborted: BaseMw' ->
-          runners.base.current-middleware!.name.should.eql 'BaseMw'
+          runners.base.current-middleware!.name.should.eql 'base-mw'
 
     describe 'is-success' ->
       context 'success is false' ->
