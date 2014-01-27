@@ -68,12 +68,16 @@ describe 'base runner' ->
             registry.middlewares[mw.base.name].should.eql mw.base
 
       context 'using hash of mw-components' ->
+        var results
+
         before ->
           mw.base = new BaseMw
           mw.super = new BaseMw name: 'super-duper'
           runners.base := base-runner on-success: done-fun
           runners.base.use basic: mw.base, super: mw.super
           registry := runners.base.registry
+          runners.base.run!
+          results := runners.base.results
 
         describe 'registry' ->
           describe 'registered mw-components' ->
@@ -82,6 +86,13 @@ describe 'base runner' ->
 
             specify 'should have super BaseMw component' ->
               registry.get('super').should.eql mw.super
+
+        describe 'results' ->
+          specify 'has basic result' ->
+            results['basic'].should.be.true
+
+          specify 'has super result' ->
+            results['super'].should.be.true
 
       context 'using chain of mw-components' ->
         before ->

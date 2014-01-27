@@ -120,7 +120,8 @@ module.exports = class BaseRunner implements Debugger
     @middleware-list![@index]
 
   add-result: (result) ->
-    @results[@current-middleware!.name] = result
+    name = @registry.map[@current-middleware!.name]
+    @results[name] = result
 
   can-run-mw: ->
     return false if @aborted

@@ -45,7 +45,7 @@ describe 'MiddlewareRegistry' ->
 
     describe 'get' ->
       specify 'returns void' ->
-        expect(registries.empty.get 'BaseMw').to.equal void
+        expect(registries.empty.get 'base-mw').to.equal void
 
     describe 'at' ->
       specify 'returns void' ->
@@ -63,7 +63,7 @@ describe 'MiddlewareRegistry' ->
 
         describe 'middlewares' ->
           specify 'BaseMw is registered by classname: BaseMw' ->
-            registries.base.middlewares['BaseMw'].should.be.eql mw.base
+            registries.base.get('base-mw').should.be.eql mw.base
 
         describe 'middleware-list' ->
           specify 'has one item' ->
@@ -71,8 +71,22 @@ describe 'MiddlewareRegistry' ->
 
       describe 'get' ->
         specify 'returns BaseMw mw component' ->
-          registries.base.get('BaseMw').should.eql mw.base
+          registries.base.get('base-mw').should.eql mw.base
+
+        specify 'throws Error on bad name' ->
+          expect(-> registries.base.get 'base-mOw').to.throw
+
+
+      describe 'get-mapped' ->
+        specify 'returns BaseMw mw component' ->
+          registries.base.get-mapped('base-mw').should.eql mw.base
+
+        specify 'throws Error when not a mapped component' ->
+          expect(-> registries.base.get-mapped 'base-mOw').to.throw
 
       describe 'at' ->
         specify 'returns BaseMw mw component' ->
           registries.base.at(0).should.eql mw.base
+
+        specify 'throws Error on bad index' ->
+          expect(-> registries.base.at -1).to.throw
