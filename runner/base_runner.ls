@@ -75,6 +75,7 @@ module.exports = class BaseRunner implements Debugger
             self.use-mw mw[key], key
       default
         throw Erorr "Not a valid mw-component, was: #{typeof mw} #{mw}"
+    @
 
   abort: ->
     @aborted = true

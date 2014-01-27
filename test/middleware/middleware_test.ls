@@ -113,6 +113,25 @@ describe 'Middleware' ->
             specify 'should have super BaseMw component' ->
               registry.get('super').should.eql mw.super
 
+      context 'using chain of mw-components' ->
+        before ->
+          mw.base = new BaseMw
+          mw.super = new BaseMw name: 'super-duper'
+          middleware.registry.clean!
+          middleware.use(mw.base).use(mw.super)
+
+        describe 'registry' ->
+          var registry
+          before ->
+            registry := middleware.runner.registry
+
+          describe 'registered mw-components' ->
+            specify 'should have basic BaseMw components in register' ->
+              registry.get('base-mw').should.eql mw.base
+
+            specify 'should have super BaseMw components in register' ->
+              registry.get('super-duper').should.eql mw.super
+
       context 'using list of mw-components' ->
         before ->
           mw.base = new BaseMw

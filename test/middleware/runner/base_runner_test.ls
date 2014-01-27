@@ -50,6 +50,72 @@ describe 'base runner' ->
     specify 'should have assigned done-fun function' ->
       runners.base.on-success!.should.eql done-fun!
 
+    describe 'use' ->
+      var registry
+
+      context 'using simple mw' ->
+        before ->
+          mw.base = new BaseMw
+          runners.base := base-runner on-success: done-fun
+          runners.base.use mw.base
+          registry := runners.base.registry
+
+        describe 'registered component' ->
+          specify 'in registry middleware list' ->
+            registry.middleware-list![0].should.eql mw.base
+
+          specify 'in middlewares by name' ->
+            registry.middlewares[mw.base.name].should.eql mw.base
+
+      context 'using hash of mw-components' ->
+        before ->
+          mw.base = new BaseMw
+          mw.super = new BaseMw name: 'super-duper'
+          runners.base := base-runner on-success: done-fun
+          runners.base.use basic: mw.base, super: mw.super
+          registry := runners.base.registry
+
+        describe 'registry' ->
+          describe 'registered mw-components' ->
+            specify 'should have basic BaseMw component' ->
+              registry.get('basic').should.eql mw.base
+
+            specify 'should have super BaseMw component' ->
+              registry.get('super').should.eql mw.super
+
+      context 'using chain of mw-components' ->
+        before ->
+          mw.base = new BaseMw
+          mw.super = new BaseMw name: 'super-duper'
+          runners.base := base-runner on-success: done-fun
+          runners.base.use(mw.base).use(mw.super)
+          registry := runners.base.registry
+
+        describe 'registry' ->
+          describe 'registered mw-components' ->
+            specify 'should have basic BaseMw components in register' ->
+              registry.get('base-mw').should.eql mw.base
+
+            specify 'should have super BaseMw components in register' ->
+              registry.get('super-duper').should.eql mw.super
+
+      context 'using list of mw-components' ->
+        before ->
+          mw.base = new BaseMw
+          mw.super = new BaseMw name: 'super-duper'
+          runners.base := base-runner on-success: done-fun
+          runners.base.use mw.base, mw.super
+          registry := runners.base.registry
+
+        describe 'registry' ->
+          describe 'registered mw-components' ->
+            specify 'should have basic BaseMw components in register' ->
+              registry.get('base-mw').should.eql mw.base
+
+            specify 'should have super BaseMw components in register' ->
+              registry.get('super-duper').should.eql mw.super
+
+
   context 'data and custom done function' ->
     before ->
       runners.base := base-runner data: 'hello', on-success: done-fun

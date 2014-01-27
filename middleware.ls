@@ -29,6 +29,7 @@ module.exports = class Middleware implements Debugger
 
   use: ->
     @runner.use _.values(arguments).flatten!
+    @
 
   results: ->
     @runner.results
