@@ -103,6 +103,13 @@ mw.base.run = ->
   @abort!
 ```
 
+## Running promises
+
+If the `run` method contains a promise, it will often be unable to return the result of said promise
+Instead the callback or done handler of the promise can set the `@result` of the Mw-component and
+this result will be used by the runner to set the result instead of the return value.
+Note: It only works if the `run` method returns `void`.
+
 ## Related projects
 
 Please see:

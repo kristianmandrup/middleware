@@ -140,7 +140,7 @@ module.exports = class BaseRunner implements Debugger
     @result!
 
   run-mw: ->
-    result = @run-current-mw!
+    result = @current-mw-result!
     return false if @aborted
     @add-result result
     @inc-index!
@@ -157,6 +157,14 @@ module.exports = class BaseRunner implements Debugger
 
   run-current-mw: ->
     @current-mw!.run @
+
+  current-mw-result: ->
+    res = @run-current-mw!
+    switch res
+    case void
+      res.result
+    else
+      res
 
   current-mw: ->
     @registry.at @index
