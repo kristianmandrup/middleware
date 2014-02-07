@@ -7,11 +7,26 @@ requires.test 'test_setup'
 BaseRunner  = requires.file 'runner/base_runner'
 BaseMw      = requires.file 'mw/base_mw'
 
+class PromiseMw extends BaseMw
+  (@ctx) ->
+    super ...
+
+  run: ->
+    @result = true
+    void
+
+
 describe 'base runner' ->
   var runner
 
+  base-mw = (ctx) ->
+    new BaseMw ctx
+
   base-runner = (ctx) ->
     new BaseRunner ctx
+
+  promise-mw = (ctx) ->
+    new PromiseMw ctx
 
   runners = {}
   mw = {}
@@ -19,17 +34,33 @@ describe 'base runner' ->
   done-fun = ->
     'done :)'
 
+  context 'my runner' ->
+    before ->
+      mw.promise = promise-mw!
+      runners.my := base-runner!
+      runners.my.use promise: mw.promise
+      runners.my.run!
+
+    specify 'should have true promise result' ->
+      runners.my.results.promise.should.be.true
+
   context 'no custom done function' ->
     before ->
       runners.base := base-runner!
+      runners.base.clean!
 
     specify 'should be a BaseRunner' ->
       runners.base.constructor.should.be.eql BaseRunner
 
-    specify 'should have assigned default on-success function' ->
-      runners.base.on-success!.success.should.be.true
-      runners.base.on-success!.errors.should.eql {}
-      runners.base.on-success!.results.should.eql {}
+    describe 'should have assigned default on-success function' ->
+      specify 'success is true' ->
+        runners.base.on-success!.success.should.be.true
+
+      specify 'no errors' ->
+        runners.base.on-success!.errors.should.eql {}
+
+      specify 'no results' ->
+        runners.base.on-success!.results.should.eql {}
 
     describe 'results' ->
       specify 'should be empty' ->
@@ -55,7 +86,7 @@ describe 'base runner' ->
 
       context 'using simple mw' ->
         before ->
-          mw.base = new BaseMw
+          mw.base = base-mw!
           runners.base := base-runner on-success: done-fun
           runners.base.use mw.base
           registry := runners.base.registry
@@ -71,8 +102,8 @@ describe 'base runner' ->
         var results
 
         before ->
-          mw.base = new BaseMw
-          mw.super = new BaseMw name: 'super-duper'
+          mw.base = base-mw!
+          mw.super = base-mw name: 'super-duper'
           runners.base := base-runner on-success: done-fun
           runners.base.use basic: mw.base, super: mw.super
           registry := runners.base.registry
@@ -96,8 +127,8 @@ describe 'base runner' ->
 
       context 'using chain of mw-components' ->
         before ->
-          mw.base = new BaseMw
-          mw.super = new BaseMw name: 'super-duper'
+          mw.base = base-mw!
+          mw.super = base-mw name: 'super-duper'
           runners.base := base-runner on-success: done-fun
           runners.base.use(mw.base).use(mw.super)
           registry := runners.base.registry
@@ -112,8 +143,8 @@ describe 'base runner' ->
 
       context 'using list of mw-components' ->
         before ->
-          mw.base = new BaseMw
-          mw.super = new BaseMw name: 'super-duper'
+          mw.base = base-mw!
+          mw.super = base-mw name: 'super-duper'
           runners.base := base-runner on-success: done-fun
           runners.base.use mw.base, mw.super
           registry := runners.base.registry
@@ -130,7 +161,7 @@ describe 'base runner' ->
   context 'data and custom done function' ->
     before ->
       runners.base := base-runner data: 'hello', on-success: done-fun
-      mw.base := new BaseMw
+      mw.base := base-mw!
       runners.base.use mw.base
 
     describe 'middleware-list' ->
@@ -215,7 +246,7 @@ describe 'base runner' ->
     describe 'error' ->
       context 'Mw-component run method causes error' ->
         before ->
-          mw.base := new BaseMw
+          mw.base := base-mw!
           runners.base.clean!
           runners.base.use mw.base
           mw.base.run = ->
@@ -229,8 +260,8 @@ describe 'base runner' ->
     describe 'abort' ->
       context 'Mw-component run method causes error' ->
         before ->
-          mw.base := new BaseMw
-          mw.next := new BaseMw name: 'next'
+          mw.base := base-mw!
+          mw.next := base-mw name: 'next'
           runners.base.clean!
           runners.base.use(mw.base).use(mw.next)
           mw.base.run = ->
@@ -256,8 +287,8 @@ describe 'base runner' ->
     describe 'is-success' ->
       context 'success is false' ->
         before ->
-          mw.base := new BaseMw
-          mw.next := new BaseMw name: 'next'
+          mw.base := base-mw!
+          mw.next := base-mw name: 'next'
           runners.base.clean!
           runners.base.success = false
           runners.base.use(mw.base).use(mw.next)

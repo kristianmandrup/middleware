@@ -12,6 +12,9 @@ module.exports = class BaseMw implements Debugger
     @set-runner!
     @set-name!
 
+  init: ->
+    @result = void
+
   set-runner: ->
     if @context.runner? and @context.runner.run-mw?
       @runner = @context.runner

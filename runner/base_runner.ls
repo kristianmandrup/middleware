@@ -156,13 +156,15 @@ module.exports = class BaseRunner implements Debugger
     not lo.is-empty @errors
 
   run-current-mw: ->
-    @current-mw!.run @
+    mw = @current-mw!
+    mw.init!
+    mw.run @
 
   current-mw-result: ->
     res = @run-current-mw!
     switch res
     case void
-      res.result
+      @current-mw!.result
     else
       res
 
