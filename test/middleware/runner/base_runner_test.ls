@@ -37,12 +37,26 @@ describe 'base runner' ->
   context 'my runner' ->
     before ->
       mw.promise = promise-mw!
-      runners.my := base-runner!
+      runners.my := base-runner collection: 'users'
       runners.my.use promise: mw.promise
-      runners.my.run!
+      runners.my.debug-on!
+      runners.my.run model: 'post'
 
     specify 'should have true promise result' ->
       runners.my.results.promise.should.be.true
+
+    describe 'smart-merge' ->
+      var res
+
+      before ->
+        res := runners.my.smart-merge(data: 'yeah')
+        console.log res
+
+      specify 'keeps data' ->
+        res.data.should.eql 'yeah'
+
+      specify 'keeps collection' ->
+        res.context.collection.should.eql 'users'
 
   context 'no custom done function' ->
     before ->

@@ -34,11 +34,16 @@ module.exports = class Middleware implements Debugger
   results: ->
     @runner.results
 
-  run: ->
-    @runner.run!
+  run: (ctx) ->
+    @clean!
+    @debug 'run', ctx
+    @runner.run ctx
 
   clean: ->
     @runner.clean!
+
+  clear: ->
+    @clean!
 
   @get-registered = (name) ->
     unless @@runners[name]

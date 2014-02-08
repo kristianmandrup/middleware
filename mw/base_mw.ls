@@ -12,6 +12,9 @@ module.exports = class BaseMw implements Debugger
     @set-runner!
     @set-name!
 
+  clean: ->
+    @context = {}
+
   init: ->
     @result = void
 
@@ -49,5 +52,5 @@ module.exports = class BaseMw implements Debugger
     @runner.successful!
 
   # by default just returns true :)
-  run: ->
+  run: (ctx) ->
     true

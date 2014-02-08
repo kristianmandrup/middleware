@@ -104,6 +104,7 @@ module.exports = class BaseRunner implements Debugger
     @success  = true
     @errors   = {}
     @aborted  = false
+    @context  = {}
 
   success:  true
   errors:   {}
@@ -135,12 +136,13 @@ module.exports = class BaseRunner implements Debugger
   inc-index: ->
     @index++
 
-  run: ->
-    @run-mw! if @can-run-mw!
+  run: (ctx) ->
+    @debug 'run', ctx
+    @run-mw ctx if @can-run-mw!
     @result!
 
-  run-mw: ->
-    result = @current-mw-result!
+  run-mw: (ctx) ->
+    result = @current-mw-result ctx
     return false if @aborted
     @add-result result
     @inc-index!
@@ -155,13 +157,19 @@ module.exports = class BaseRunner implements Debugger
   has-errors: ->
     not lo.is-empty @errors
 
-  run-current-mw: ->
+  run-current-mw: (ctx) ->
     mw = @current-mw!
     mw.init!
-    mw.run @
+    @debug 'run-current-mw ctx', ctx
+    ctx = @smart-merge ctx
+    @debug 'smart-merged ctx to run mw', ctx, mw
+    mw.run ctx
 
-  current-mw-result: ->
-    res = @run-current-mw!
+  smart-merge: (ctx) ->
+    ctx
+
+  current-mw-result: (ctx) ->
+    res = @run-current-mw ctx
     switch res
     case void
       @current-mw!.result
