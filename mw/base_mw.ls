@@ -1,6 +1,5 @@
 _         = require 'prelude-ls'
-rek       = require 'rekuire'
-requires  = rek 'requires'
+requires  = require '../requires'
 
 require 'sugar'
 

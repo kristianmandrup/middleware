@@ -25,7 +25,6 @@
   "dependencies": {
     "lodash":           "*",
     "sugar":            "*",
-    "rekuire":          "*",
     "LiveScript":       "*",
     "inflection":       "*",
     "rubyjs":           "*",

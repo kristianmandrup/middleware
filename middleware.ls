@@ -1,8 +1,7 @@
-rek         = require 'rekuire'
-requires    = rek 'requires'
+requires  = require './requires'
 
 _           = require 'prelude-ls'
-lo          =   require 'lodash'
+lo          = require 'lodash'
 require 'sugar'
 
 Debugger            = requires.file 'debugger'
