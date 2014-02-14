@@ -2,12 +2,34 @@
 
 The `Middleware` class is a factory for creating a Middleware suite that contains a Runner and individual Mw components.
 
+The following Mw-components work with this middleware
+
+* [model-mw](https://github.com/kristianmandrup/model-mw)
+* [authorization-mw](https://github.com/kristianmandrup/authorization-mw)
+* [validation-mw](https://github.com/kristianmandrup/validation-mw)
+* [decorator-mw](https://github.com/kristianmandrup/decorator-mw)
+* [marshaller-mw](https://github.com/kristianmandrup/marshaller-mw)
+
+
 Here we create a `Middleware` with a `ModelRunner` and register the `Mw` components
  `authorizer` and `validator` to be run by the ModelRunner.
 
 ```LiveScript
-Middleware.register model: ModelRunner
 model-middleware = new Middleware('model').use(authorizer).use(validator)
+```
+
+Registering runners
+
+The `ModelRunner` from the [model-mw](https://github.com/kristianmandrup/model-mw) project is pre-registered by this project as it is the base runner for all the most commonly used Mw-components.
+In effect the following statement is run:
+
+`Middleware.register model: ModelRunner`
+
+You are free to register your own runners for use with Middleware.
+
+```LiveScript
+Middleware.register baby-runner: RunBaby
+my-middleware = new Middleware('baby-runner').use(my-little-cute-baby-mw)
 ```
 
 ## BaseMw
@@ -30,7 +52,7 @@ your own name as shown in code above.
 ## BaseRunner
 
 The `BaseRunner` is a base class that provides the base functionality for any middleware runner.
-A typical runner such as `ModelRunner` (see *model-mw* project) extends `BaseRunner` to be specialized for operating with models.
+A typical runner such as `ModelRunner` (see [model-mw](https://github.com/kristianmandrup/model-mw) project) extends `BaseRunner` to be specialized for operating with models.
 
 When constructed, it can be passed a `on-success` function which is returned if all middlewares are run successfully.
 It can also take an `on-error` function which is called when one or more middlewares cause an error.
@@ -45,6 +67,7 @@ error-fun = ->
   error: true
   errors: @errors
 
+mw = {}
 mw.base     = new BaseMw name: 'my mw'
 base-runner = new BaseRunner on-success: my-done-fun, on-error: error-fun
 base-runner.use mw.base
@@ -72,8 +95,6 @@ The method `register` is used internally by `Runner` when `use` is called with a
 For `Middleware` it delegates `use` to `runner.use`.
 
 ```LiveScript
-Middleware.register model: ModelRunner
-
 # creates a Middleware instance with registry for Mw components
 middleware = new Middleware 'model'
 
@@ -110,14 +131,6 @@ Instead the callback or done handler of the promise can set the `@result` of the
 this result will be used by the runner to set the result instead of the return value.
 Note: It only works if the `run` method returns `void`.
 
-## Related projects
-
-Please see:
-
-* model-mw
-* authorization-mw
-* validation-mw
-
 ## Testing
 
 Using *mocha*
@@ -130,7 +143,6 @@ Run particular test
 
 `$ mocha test/middleware/runner/base_runner_test.js`
 
-Easy :)
 
 ## Contribution
 
