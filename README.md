@@ -15,8 +15,14 @@ Here we create a `Middleware` with a `ModelRunner` and register the `Mw` compone
  `authorizer` and `validator` to be run by the ModelRunner.
 
 ```LiveScript
-model-middleware = new Middleware('model').use(authorizer).use(validator)
+model-middleware = new Middleware('model', data: person).use(authorizer).use(validator)
+model-middleware.run!
 ```
+
+The argument `data: person` sets the context (data) to be sent through the middleware pipeline.
+Alternatively you can set the context directly when executing `run` on the middleware.
+
+`model-middleware.run data: person`
 
 Registering runners
 
@@ -30,15 +36,17 @@ You are free to register your own runners for use with Middleware.
 ```LiveScript
 Middleware.register baby-runner: RunBaby
 my-middleware = new Middleware('baby-runner').use(my-little-cute-baby-mw)
+my-middleware.run my-baby
 ```
+
+See the [wiki](https://github.com/kristianmandrup/middleware/wiki) for more details on the internal mechanics.
 
 ## Error
 
-You can cause an error simply by issuing `error(msg)` from within an mw-component. This will add the error
-to the `errors` object of the Runner, for the mw-component in question.
+You can raise an error simply by issuing `error(msg)` from within a mw-component. This will add the error
+to the `errors` object of the runner.
 
-This will not abort further execution, but will mean that when the runner finishes execution the errors object is returned
-not the result of execution.
+This will not abort further execution, but will mean that when the runner finishes execution the errors object is returned instead of the result of execution. This will also set the runner `success` to false.
 
 ```LiveScript
 mw.base.run = ->
@@ -47,7 +55,8 @@ mw.base.run = ->
 
 ## Aborting
 
-You can abort further mw-component executin by the runner, simply by issuing `abort!` in the mw-component.
+You can abort further mw-component execution by the runner, simply by issuing `abort!` in the mw-component.
+This will also set the runner `success` to false.
 
 ```LiveScript
 mw.base.run = ->
