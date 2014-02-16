@@ -53,6 +53,20 @@ mw.base.run = ->
   @error 'Some stupid shit happened!'
 ```
 
+### Localized errors
+
+You can also add localized errors like this:
+
+```LiveScript
+mw.base.run = ->
+  @localized-error @localize('Some stupid shit happened!')
+```
+
+Note that both "normal" errors and localized errors are stoped side-by-side in seperate containers.
+Thus you could have an errors list of keys, and then look up those keys to produce the localized errors to display to the user (typically on the client). The error keys can be used as "master records" in the code to identify specific types of errors. 
+
+This could be extended to load errors from i18n.json files in some localization library such as [i18n.js](https://github.com/fnando/i18n-js) or [i18next](http://i18next.com/) or similar.
+
 ## Aborting
 
 You can abort further mw-component execution by the runner, simply by issuing `abort!` in the mw-component.
@@ -62,6 +76,19 @@ This will also set the runner `success` to false.
 mw.base.run = ->
   @abort!
 ```
+
+## Other handies
+
+Any Mw-component also have the following methods available which are all forwarded to the runner.
+
+ * aborted
+ * has-errors
+ * is-success
+ * is-failure
+
+The `runner` is always available from any Mw-component, and here a few more methods are available from [BaseRunner](https://github.com/kristianmandrup/middleware/blob/master/runner/base_runner.ls) such as the `last-mw` and `current-mw` methods. Importantly, the runner maintains a `results` object, with a key for each Mw-component that has been run and the result of the run method.
+
+Note: There should be a `last-result` method and `result-of(mw-component-name)` available on both runner and each Mw-component ;)
 
 ## Running promises
 
