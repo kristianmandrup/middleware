@@ -140,6 +140,16 @@ module.exports = class BaseRunner implements Debugger
     if @index > 0
       @middleware-list![@index -1]
 
+  # aliases
+  mw-list: ->
+    @middleware-list!
+
+  current-mw: ->
+    @current-middleware!
+
+  last-mw: ->
+    @last-middleware!
+
   add-result: (result) ->
     name = @registry.map[@current-middleware!.name]
     @results[name] = result
