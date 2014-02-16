@@ -29,12 +29,14 @@ module.exports = class BaseRunner implements Debugger
     @registry = new MiddlewareRegistry
 
   @on-success = ->
-    success: @success
-    errors:  @errors
-    results: @results
+    lo.extend {success: @success, results: @results}, @all-errors
 
   @on-error = ->
-    @errors
+    @all-errors
+
+  all-errors: ->
+    errors: @errors
+    localized-errors: @localized-errors
 
   use-mw: (mw, name) ->
     # @debug "use-mw", mw, name
@@ -86,6 +88,18 @@ module.exports = class BaseRunner implements Debugger
     @errors[@current-middleware!.name] ||= []
     @errors[@current-middleware!.name].push msg
 
+  # alias
+  add-error: (msg) ->
+    @error msg
+
+  localized-error (msg) ->
+    @localized-errors[@current-middleware!.name] ||= []
+    @localized-errors[@current-middleware!.name].push msg
+
+  # alias
+  add-localized-error: (msg) ->
+    @localized-error msg
+
   is-success: ->
     @success is true
 
@@ -103,11 +117,13 @@ module.exports = class BaseRunner implements Debugger
     @index    = 0
     @success  = true
     @errors   = {}
+    @localized-errors = {}
     @aborted  = false
     @context  = {}
 
   success:  true
   errors:   {}
+  localized-errors: {}
 
   results: {}
 

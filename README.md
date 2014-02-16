@@ -73,7 +73,7 @@ Note: It only works if the `run` method returns `void`.
 ## TODO
 
 The current `BaseRunner` is very simple and only supports running every Mw-component in synchronous mode.
-This is far from optimal! There should be more advanced runners available that
+This is not always optimal! There should be more advanced runners available that
  support Mw-components that return promises and also one allow running one or more
  Mw-components asynchronously and wait until they all deliver their results etc.
 
