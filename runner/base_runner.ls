@@ -23,6 +23,8 @@ module.exports = class BaseRunner implements Debugger
       if  _.is-type 'Function', error-fun
         @on-error   = error-fun
 
+      @config = @context.config # can be used for any type of config
+
     @on-success ||= @@on-success
     @on-error   ||= @@on-error
 

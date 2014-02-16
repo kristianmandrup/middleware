@@ -97,17 +97,23 @@ Instead the callback or done handler of the promise can set the `@result` of the
 this result will be used by the runner to set the result instead of the return value.
 Note: It only works if the `run` method returns `void`.
 
-## TODO
+## Async Runner
 
-The current `BaseRunner` is very simple and only supports running every Mw-component in synchronous mode.
-This is not always optimal! There should be more advanced runners available that
- support Mw-components that return promises and also one allow running one or more
- Mw-components asynchronously and wait until they all deliver their results etc.
+The current `BaseRunner` is very simple and only supports running the Mw-component a synchronous flow mode.
+This is not always optimal!
 
-Please help out with this effort ;)
+There should be an `AsyncRunner` available that supports running Mw-components asynchronously.
+This runner should employ promises and have each Mw-component return a promise as the result.
+It should then only complete when all Mw-components have delivered their results.
 
 The async runner(s) should support both *Q* and *RSVP*, by allowing configuration
  of `defer` function (same as *LGTM* validator approach).
+
+Both these promise libraries support a "wait for all promised fulfilled" strategy.
+
+Please help out with this effort ;)
+
+Initial "skeleton" has been started...
 
 ## Testing
 
