@@ -87,8 +87,8 @@ Any Mw-component also have the following methods available which are all forward
  * is-failure
 
 The `runner` is always available from any Mw-component, and here a few more methods are available from [BaseRunner](https://github.com/kristianmandrup/middleware/blob/master/runner/base_runner.ls) such as the `last-mw` and `current-mw` methods. Importantly, the runner maintains a `results` object, with a key for each Mw-component that has been run and the result of the run method.
-
-Note: There should be a `last-result` method and `result-of(mw-component-name)` available on both runner and each Mw-component ;)
+There is also a `last-result` method and `result-of(mw-component or name)` available on the runner and each Mw-component for any Mw-component
+to check up on a previous result.
 
 ## Running promises
 

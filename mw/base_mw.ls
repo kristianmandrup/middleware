@@ -35,6 +35,12 @@ module.exports = class BaseMw implements Debugger
   aborted: ->
     @runner.aborted
 
+  last-result: ->
+    @runner.last-result!
+
+  result-of: (obj) ->
+    @runner.result-of obj
+
   has-errors: ->
     @runner.has-errors!
 

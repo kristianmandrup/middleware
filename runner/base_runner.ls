@@ -92,7 +92,7 @@ module.exports = class BaseRunner implements Debugger
   add-error: (msg) ->
     @error msg
 
-  localized-error (msg) ->
+  localized-error: (msg) ->
     @localized-errors[@current-middleware!.name] ||= []
     @localized-errors[@current-middleware!.name].push msg
 
@@ -139,6 +139,19 @@ module.exports = class BaseRunner implements Debugger
   last-middleware: ->
     if @index > 0
       @middleware-list![@index -1]
+
+  last-result: ->
+    @result-of last-middleware!
+
+  result-of: (mw) ->
+    name = switch typeof mw
+    case 'object'
+      mw.name
+    case 'string'
+       mw
+    default
+      throw Error "Argument error: Must be a String or Mw-component, was: #{mw}"
+    @results[name]
 
   # aliases
   mw-list: ->
