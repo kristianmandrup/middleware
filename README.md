@@ -1,5 +1,7 @@
 # Middleware
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/kristianmandrup/middleware.svg)](https://greenkeeper.io/)
+
 The `Middleware` class is a factory for creating a Middleware suite that contains a Runner and individual Mw components.
 
 The following Mw-components work with this middleware
